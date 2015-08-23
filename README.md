@@ -56,8 +56,9 @@ You can see a simple truss below, composed from mechanical symbols and elements.
 
 ### Labels ###
 
-If we want to add a textual label to a geometric element, we can always use the `txt` element. However some 
-element types support the smarter `label` element, which comes with a more intuitive, relative positioning. 
+If you want to add a textual label to a geometric element, you can always use the `txt` element. However some 
+element types support the smarter `label` element, which comes with a more intuitive, relative positioning with respect 
+to its previous element. 
 
 Elements  | Label positions
  ------------- | :-------------: |
@@ -65,10 +66,6 @@ Centric `point` elements | ![img.point-label.mec]
 Linear `line` elements  | ![img.line-label.mec]
 
 The dotted lines indicate the labels offset distance, which is set by the style property `style({labelOffset:<val>})`.
-
-
-Who might need *yet another 2D graphics library* ? Well, *(non-software)* engineers and scientists mostly need an easy way to create some prototypal - static or interactive - web based graphics.
-They want a small and high performant library with a simple and intuitive API fully documented on a single page cheat sheet.
 
 
 ### Truss Example with Labels###
