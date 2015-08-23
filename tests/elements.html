@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>g2.mec - elements</title>
+    <style> canvas { border: 1px solid #000; } </style>
+</head>
+
+<body>
+    <h1>g2.mec - elements</h1>
+    <canvas id="c" width="420" height="100"></canvas>
+    <script src='../../g2/g2.js'></script>
+    <script src='../g2.mec.js'></script>
+    <script>
+       function onmove(e) {
+          if (e.buttons !== undefined ? e.buttons : (e.which || e.button)) { // any button pressed ...
+             var dx = e.movementX || e.mozMovementX || e.webkitMovementX || 0,
+                 dy = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
+             g.pan(dx, g.state.cartesian ? -dy : dy);
+          }
+          e.preventDefault(); 
+          return false; 
+       }
+       function onwheel(e) {
+          var delta = Math.max(-1,Math.min(1,e.deltaY||e.wheelDelta)),
+              x = e.clientX - Math.floor(rec.left),
+              y = e.clientY - Math.floor(rec.top);
+          if (g.state.cartesian)
+             y = rec.height - y;
+          g.zoom(delta>0?9/10:10/9,x,y);
+          e.preventDefault(); 
+          return false; 
+       }
+       function render() { g.exe(ctx); requestAnimationFrame(render); }
+
+       var ctx = document.getElementById("c").getContext("2d"),
+           rec = ctx.canvas.getBoundingClientRect(),
+           pi = Math.PI,
+           g =  g2({cartesian:true,pan:{dx:10,dy:10}})
+                  .clr()
+//                  .grid()
+                  .style({fs:"orange",lw:1,foz:14,fof:"cursive",thal:"center",tval:"middle",lwnosc:true,labelOffset:10})
+                  .vec(10,50,50,50).txt("vec",30,12)
+                  .avec(80,20,35,120/180*pi,-60/180*pi).txt("avec",80,12)
+                  .dim(110,50,150,50,{pos:"in"}).txt("dim",130,12)
+                  .adim(180,20,35,120/180*pi,-60/180*pi,{pos:"in"}).txt("adim",180,12)
+                  .slider(230,50,0,40).label("slider","s")
+                  .spring(260,50,300,50).label("spring","mid",30)
+                  .damper(310,50,350,50).label("damper","mid",30)
+                  .ground([360,40,390,40,390,60],false,{sign:-1}).txt("ground",380,12)
+                  .style({ld:"@dashdot"})
+                  .lin(465,50,525,50).txt("center line",490,12)
+                  .exe(ctx);
+
+       ctx.canvas.addEventListener("mousemove", onmove, false);
+       ctx.canvas.addEventListener("wheel", onwheel, false);
+       render();     
+   </script>
+</body>
+</html>

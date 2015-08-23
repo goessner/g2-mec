@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>g2 - symbols</title>
+    <style> canvas { border: 1px solid #000; background-color: #eee} </style>
+</head>
+
+<body>
+    <canvas id="c" width="300" height="300"></canvas>
+    <script src='../../g2/g2.js'></script>
+    <script src='../g2.mec.js'></script>
+    <script>
+       function onmove(e) {
+          if (e.buttons !== undefined ? e.buttons : (e.which || e.button)) { // any button pressed ...
+             var dx = e.movementX || e.mozMovementX || e.webkitMovementX || 0,
+                 dy = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
+             g.pan(dx, g.state.cartesian ? -dy : dy);
+          }
+          e.preventDefault(); 
+          return false; 
+       }
+       function onwheel(e) {
+          var delta = Math.max(-1,Math.min(1,e.deltaY||e.wheelDelta)),
+              x = e.clientX - Math.floor(rec.left),
+              y = e.clientY - Math.floor(rec.top);
+          if (g.state.cartesian)
+             y = rec.height - y;
+          g.zoom(delta>0?9/10:10/9,x,y);
+          e.preventDefault(); 
+          return false; 
+       }
+       function render() { g.exe(ctx); requestAnimationFrame(render); }
+
+       var ctx = document.getElementById("c").getContext("2d"),
+           rec = ctx.canvas.getBoundingClientRect(),
+           xA = 50, yA = 50,  xB = 250, yB = 50,
+           xC = 50, yC =150,  xD = 150, yD =150,
+           xE = 50, yE =250,
+           g = g2({cartesian:true,pan:{dx:10,dy:10}})
+                .clr()
+                .style({lw:3,ls:"@nodcolor",foz:12,fof:"cursive",foc:"green",thal:"center",tval:"middle",labelOffset:3})
+                .lin(xA,yA,xB,yB).label("1")
+                .lin(xA,yA,xC,yC).label("2")
+                .lin(xA,yA,xD,yD).label("3")
+                .lin(xB,yB,xD,yD).label("4")
+                .lin(xC,yC,xD,yD).label("5")
+                .lin(xC,yC,xE,yE).label("6")
+                .lin(xD,yD,xE,yE).label("7")
+                .style({lw:2,ls:"orange",foc:"@nodcolor"})
+                .vec(xB,yB,xB,yB-50).label("F","end","left")
+                .vec(xD,yD,xD+80,yD).label("2F","mid")
+                .style({ls:"@nodcolor",lw:1})
+                .use("nodfix",xA,yA).label("A","w")
+                .use("nod",xB,yB).label("B","e")
+                .use("nod",xC,yC).label("C","w")
+                .use("nod",xD,xD).label("D","ne")
+                .use("nodflt",xE,yE,-Math.PI/2).label("E","e")
+                .style({ls:"#999",lw:1})
+                .dim(xA,275,xD,275).label("b")
+                .dim(xD,275,xB,275).label("b")
+                .dim(275,yE,275,yD).label("b")
+                .dim(275,yD,275,yA).label("b")
+                .exe(ctx);
+
+       ctx.canvas.addEventListener("mousemove", onmove, false);
+       ctx.canvas.addEventListener("wheel", onwheel, false);
+       render();     
+   </script>
+</body>
+</html>

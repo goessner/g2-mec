@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>g2 - line-elements</title>
+    <style> canvas { border: 1px solid #000; background-color: #eee} </style>
+</head>
+
+<body>
+    <canvas id="c" width="300" height="300"></canvas>
+    <script src='../../g2/g2.js'></script>
+    <script src='../g2.mec.js'></script>
+    <script>
+       function onmove(e) {
+          if (e.buttons !== undefined ? e.buttons : (e.which || e.button)) { // any button pressed ...
+             var dx = e.movementX || e.mozMovementX || e.webkitMovementX || 0,
+                 dy = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
+             g.pan(dx, g.state.cartesian ? -dy : dy);
+          }
+          e.preventDefault(); 
+          return false; 
+       }
+       function onwheel(e) {
+          var delta = Math.max(-1,Math.min(1,e.deltaY||e.wheelDelta)),
+              x = e.clientX - Math.floor(rec.left),
+              y = e.clientY - Math.floor(rec.top);
+          if (g.state.cartesian)
+             y = rec.height - y;
+          g.zoom(delta>0?9/10:10/9,x,y);
+          e.preventDefault(); 
+          return false; 
+       }
+       function render() { g.exe(ctx); requestAnimationFrame(render); }
+
+       var ctx = document.getElementById("c").getContext("2d"),
+           rec = ctx.canvas.getBoundingClientRect(),
+           g = g2({cartesian:true})
+                .clr()
+                .style({ls:"#666",ld:"@dot"})
+                .lin(63,77,223,187)
+                .lin(77,63,237,173)
+                .style({ls:"@nodcolor",ld:"@solid",foz:16,fof:"cursive",thal:"center",tval:"middle",labelOffset:10})
+                .lin(70,70,230,180).label("beg,right","beg")
+                                   .label("mid,left","mid","left")
+                                   .label("0.75,right",0.75)
+                                   .label("end,left","end","left")
+                .style({fs:"@nodfill"})
+                .cir(70,70,3)
+                .cir(150,125,3)
+                .cir(190,152,3)
+                .cir(230,180,3)
+                .exe(ctx);
+
+       ctx.canvas.addEventListener("mousemove", onmove, false);
+       ctx.canvas.addEventListener("wheel", onwheel, false);
+       render();     
+   </script>
+</body>
+</html>

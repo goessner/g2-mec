@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>g2 - symbols</title>
+    <style> canvas { border: 1px solid #000; } </style>
+</head>
+
+<body>
+    <h1>g2 - symbols</h1>
+    <canvas id="c" width="300" height="300"></canvas>
+    <script src='../../g2/g2.js'></script>
+    <script src='../g2.mec.js'></script>
+    <script>
+       function onmove(e) {
+          if (e.buttons !== undefined ? e.buttons : (e.which || e.button)) { // any button pressed ...
+             var dx = e.movementX || e.mozMovementX || e.webkitMovementX || 0,
+                 dy = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
+             g.pan(dx, g.state.cartesian ? -dy : dy);
+          }
+          e.preventDefault(); 
+          return false; 
+       }
+       function onwheel(e) {
+          var delta = Math.max(-1,Math.min(1,e.deltaY||e.wheelDelta)),
+              x = e.clientX - Math.floor(rec.left),
+              y = e.clientY - Math.floor(rec.top);
+          if (g.state.cartesian)
+             y = rec.height - y;
+          g.zoom(delta>0?9/10:10/9,x,y);
+          e.preventDefault(); 
+          return false; 
+       }
+       function render() { g.exe(ctx); requestAnimationFrame(render); }
+
+       var ctx = document.getElementById("c").getContext("2d"),
+           rec = ctx.canvas.getBoundingClientRect(),
+           pi = Math.PI,
+           rA = {x:50,y:50},  rB= {x:250,y:50},
+           rC = {x:50,y:150}, rD= {x:150,y:150},
+           rE = {x:50,y:250},
+           g = g2({cartesian:true,pan:{dx:10,dy:10}})
+                .clr()
+                .style({lw:3,foz:14,fof:"cursive",thal:"center",tval:"middle",lwnosc:true,labelOffset:10})
+                .use("nodfix",rA.x,rA.y)
+                .use("nod",rB.x,rB.y)
+                .use("nod",rC.x,rC.y)
+                .use("nod",rD.x,rD.y)
+                .use("nodflt",rD.x,rD.y,pi/2)
+                .exe(ctx);
+
+       ctx.canvas.addEventListener("mousemove", onmove, false);
+       ctx.canvas.addEventListener("wheel", onwheel, false);
+       render();     
+   </script>
+</body>
+</html>

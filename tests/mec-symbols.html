@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>g2 - mechanical symbols</title>
+    <style> canvas { border: 1px solid #000; } </style>
+</head>
+
+<body>
+    <h1>g2 - slider control</h1>
+    <canvas id="c" width="400" height="300"></canvas><br>
+    <script src='../../g2/g2.js'></script>
+    <script src='../../g2.ex/g2.ex.js'></script>
+    <script src='../g2.mec.js'></script>
+    <script>
+      var ctx = document.getElementById("c").getContext("2d"),
+          g = g2({cartesian:true})
+                .grid()
+                .cir(40,80,5).label("X","ne")
+                .use("nod",40,40).label("A","nw")
+                .use("nodfix",80,40).label("B0","e")
+                .use("nodflt",120,40).label("B","n")
+                .use("pol",160,40).label("pole","s",15)
+                .slider(220,40).label("slider","s",15)
+                .exe(ctx);
+
+   </script>
+</body>
+</html>
