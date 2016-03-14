@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>Pendulum</title>
+</head>
+
+<body>
+    <h1>Pendulum</h1>
+    <canvas id="c" width="400" height="400"></canvas>
+    <script src='../../g2/dist/g2.js'></script>
+    <script src='../src/g2.mec.js'></script>
+    <script>
+       var ctx = document.getElementById("c").getContext("2d"),
+           x0 = 200, y0 = 380, r = 140, m = 5, g = 9.81, omega0 = Math.sqrt(9.81/1.4),
+           pendulum = g2(),
+           world = g2().cartesian()
+                       .clr()
+                       .use(pendulum,{lw:3,fs:"#ddd"})
+                       .use("nodfix",{x:x0,y:y0,w:Math.PI});
+
+       function render(time) {
+          var t0 = render.first || (render.first = time),  // memoize time at first call ...
+              t = (time - t0)/1000,                        // time in [ms] ...
+              phi   =  Math.PI/4*Math.sin(omega0*t),           // oscillating equation ...
+              dphi  =  Math.PI/4*omega0*Math.cos(omega0*t),
+              ddphi = -omega0*omega0*phi,
+              cp    = -Math.cos(phi),
+              sp    =  Math.sin(phi),
+              x = x0 + r*sp, y = y0 + r*cp;
+              
+          pendulum.del()
+                  .lin(x0,y0,x,y,{ls:"#444"})
+                  .cir(x,y,8)
+                  .vec(x,y,x,y-m*g,{lw:2,ls:"maroon"}).label("mg","end")
+                  .vec(x,y,x+m*r*0.01*dphi*dphi*sp,y+m*r*0.01*dphi*dphi*cp,{lw:2,ls:"maroon"}).label("mrω^2","end","left");
+          world.exe(ctx);
+          requestAnimationFrame(render);
+       };
+       render();
+   </script>
+</body>
+</html>

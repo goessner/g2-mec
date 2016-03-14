@@ -4,7 +4,7 @@
 
 ### Mechanical Symbols ###
 
-`g2.mec.js` provides some useful mechanical symbols.
+`g2.mec.js` provides some useful mechanical elements and symbols.
 
 ![img.symbols.mec]
 
@@ -25,7 +25,18 @@ against scaling.
 
 ![img.elements.mec]
 
-Element functions have different arguments. See the reference for details.
+Element functions have different arguments.
+
+Element | Meaning
+-------- | --------
+`lin(x1,y1,x2,y2,style)` | Line element by start and end point.
+`rec(x,y,b,h,style)` | Rectangle element by anchor point, width and height. 
+`cir(x,y,r,style)` | Circle element by center point and radius.
+`arc(x,y,r,w,dw,style)` |  Arc element by center point, radius, start angle [radians] and angular range [radians].
+`ply(pts,mode,style)` | Polyline element by points array, closed mode [boolean] and iterator function.
+`txt(s,x,y,w,style)` | Text element by string, anchor point, angle and style object.
+`img(uri,x,y,b,h,`<br>`    xoff,yoff,dx,dy)` | Image element by URI, anchor point, width, height, offset and range.
+
 
 
 ### Truss Example ###

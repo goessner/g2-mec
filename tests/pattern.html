@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>g2 - pattern</title>
+    <style> canvas { border: 1px solid #000; } </style>
+</head>
+
+<body>
+    <h1>g2 - pattern</h1>
+    <div id="svg" data-width="201", data-height="101">
+<svg width="120" height="120">
+    <defs>
+       <pattern id="hatch" width="10" height="10" patternUnits="userSpaceOnUse">
+         <path d="M5.5,0.5L10.5,5.5M0.5,5.5L5.5,10.5" stroke="red" stroke-linecap="square"/>
+	    </pattern>
+    </defs>
+
+    <circle cx="60" cy="60" r="50" fill="url(#hatch)" stroke="black"/>
+</svg>
+    </div>
+    <canvas id="c" width="201" height="101"></canvas>
+    <script src='../../g2/src/g2.cor.js'></script>
+    <script src='../../g2/src/g2.c2d.js'></script>
+    <script src='../../g2-svg/src/g2.svg.js'></script>
+    <script src='../src/g2.mec.js'></script>
+    <script>
+       var ctx = document.getElementById("c").getContext("2d"),
+           pi = Math.PI,
+           g = g2().cartesian()
+                   .lin(80,30,120,70)
+//                     .mark("arrowtick",["beg","mid",2/3,1,1.25],1)
+                     .mark("arrowtick","beg",1)
+                   .exe(ctx)
+//                   .exe(document.getElementById("svg"));
+       console.log(document.getElementById("svg").innerHTML);
+//console.log(g.hello)
+   </script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 /**
- * g2.mec (c) 2013-15 Stefan Goessner
+ * g2.mec (c) 2013-16 Stefan Goessner
  * @license
  * MIT License
  */
@@ -7,83 +7,90 @@
 
 // origin symbol
 g2.symbol.origin = function() {
-   var z = 2;
-   return g2().beg().style({lc:"round",lj:"round",fs:"snow",lw:1})
-              .p().m(6*z,0).l(0,0).l(0,6*z).stroke()
-              .p().m(10*z,0).l(6*z,3/4*z).a(-Math.PI/3,6*z,-3/4*z).z()
-                  .m(0,10*z).l(3/4*z,6*z).a( Math.PI/3,-3/4*z,6*z).z().drw()
-              .cir(0,0,z).end();
+   var z = 4;
+   return g2().beg({lc:"round",lj:"round",lw:1})
+                .p().m(6*z,0).l(0,0).l(0,6*z).stroke()
+                .p().m(10*z,0).l(6*z,3/4*z).a(-Math.PI/3,6*z,-3/4*z).z()
+                    .m(0,10*z).l(3/4*z,6*z).a( Math.PI/3,-3/4*z,6*z).z().drw()
+                .cir(0,0,z)
+              .end();
 }();
 
 // mechanical symbols style ...
 g2.State.nodcolor = "#333";
 g2.State.nodfill  = "#dedede";
 g2.State.nodfill2 = "#aeaeae";
-
-// mechanical symbols ...
-g2.symbol.nod =    g2().style({ls:"@nodcolor",fs:"@nodfill"}).cir(0,0,5);
-g2.symbol.nodfix = g2().style({ls:"@nodcolor",fs:"@nodfill2"})
-                       .p()
-                       .m(-8,-12)
-                       .l(0,0)
-                       .l(8,-12)
-                       .drw()
-                       .style({fs:"@nodfill"})
-                       .cir(0,0,5);
-g2.symbol.nodflt = g2().style({ls:"@nodcolor",fs:"@nodfill2"})
-                       .p()
-                       .m(-8,-12)
-                       .l(0,0)
-                       .l(8,-12)
-                       .z()
-                       .drw()
-                       .style({fs:"@nodfill"})
-                       .cir(0,0,5)
-                       .style({lwnosc:false,ls:"@nodfill2",lw:5})
-                       .p()
-                       .m(-9,-19)
-                       .l(9,-19)
-                       .drw()
-                       .style({ls:"@nodcolor",lw:2})
-                       .p()
-                       .m(-9,-15.5)
-                       .l(9,-15.5)
-                       .drw();
-g2.symbol.gnd =    g2().style({ls:"@nodcolor",fs:"@nodfill"})
-                       .cir(0,0,5)
-                       .style({fs:"@nodcolor"})
-                       .p().m(0,0).l(0,5).a(-Math.PI/2,5,0).z().fill()
-                       .p().m(0,0).l(0,-5).a(-Math.PI/2,-5,0).z().fill();
-g2.symbol.pol =    g2().style({ls:"@nodcolor",fs:"@nodfill"})
-                       .cir(0,0,5)
-                       .style({fs:"@nodcolor"})
-                       .cir(0,0,1.5);
+g2.State.linkcolor = "#666";
+g2.State.linkfill = "rgba(176,176,176,0.5)";
 
 // mechanical line styles ...
 g2.State.solid = [];
-g2.State.dash = [25,15];
+g2.State.dash = [15,10];
 g2.State.dot = [4,4];
 g2.State.dashdot = [25,6.5,2,6.5];
 
+// mechanical symbols ...
+g2.symbol.nod =    g2().cir(0,0,5,{ls:"@nodcolor",fs:"@nodfill"});
+g2.symbol.dblnod = g2().cir(0,0,6,{ls:"@nodcolor",fs:"@nodfill"}).cir(0,0,3,{ls:"@nodcolor",fs:"@nodfill2"});
+g2.symbol.nodfix = g2().p()
+                         .m(-8,-12)
+                         .l(0,0)
+                         .l(8,-12)
+                       .drw({ls:"@nodcolor",fs:"@nodfill2"})
+                       .cir(0,0,5,{ls:"@nodcolor",fs:"@nodfill"});
+g2.symbol.dblnodfix = g2().p()
+                         .m(-8,-12)
+                         .l(0,0)
+                         .l(8,-12)
+                       .drw({ls:"@nodcolor",fs:"@nodfill2"})
+                       .cir(0,0,6,{ls:"@nodcolor",fs:"@nodfill"})
+                       .cir(0,0,3,{ls:"@nodcolor",fs:"@nodfill2"});
+g2.symbol.nodflt = g2().style({ls:"@nodcolor",fs:"@nodfill"})
+                       .p()
+                         .m(-8,-12)
+                         .l(0,0)
+                         .l(8,-12)
+                         .z()
+                       .drw({fs:"@nodfill2"})
+                       .cir(0,0,5,{fs:"@nodfill"})
+                       .lin(-9,-19,9,-19,{ls:"@nodfill2",lw:5,lwnosc:false})
+                       .lin(-9,-15.5,9,-15.5,{ls:"@nodcolor",lw:2,lwnosc:false});
+g2.symbol.dblnodflt = g2().style({ls:"@nodcolor",fs:"@nodfill"})
+                       .p()
+                         .m(-8,-12)
+                         .l(0,0)
+                         .l(8,-12)
+                         .z()
+                       .drw({fs:"@nodfill2"})
+                       .cir(0,0,6,{fs:"@nodfill"})
+                       .cir(0,0,3,{ls:"@nodcolor",fs:"@nodfill2"})
+                       .lin(-9,-19,9,-19,{ls:"@nodfill2",lw:5,lwnosc:false})
+                       .lin(-9,-15.5,9,-15.5,{ls:"@nodcolor",lw:2,lwnosc:false});
+g2.symbol.gnd =    g2().cir(0,0,5,{ls:"@nodcolor",fs:"@nodfill"})
+                       .p().m(0,5).a(-Math.PI/2,5,0).l(-5,0).a(Math.PI/2,0,-5).z().fill({fs:"@nodcolor"});
+g2.symbol.pol =    g2().cir(0,0,5,{ls:"@nodcolor",fs:"@nodfill"})
+                       .cir(0,0,2,{ls:"@nodcolor",fs:"@nodcolor"});
+
 /**
- * Draw arrow
- * @param {coord} x1 start x coord
- * @param {coord} y1 Start y coord
- * @param {coord} x2 End x coord
- * @param {coord} y2 End y coord
+ * Draw vector arrow
+ * @method
+ * @returns {object} g2
+ * @param {float} x1 start x coord
+ * @param {float} y1 Start y coord
+ * @param {float} x2 End x coord
+ * @param {float} y2 End y coord
  */
 g2.prototype.vec = function vec(x1,y1,x2,y2) {
    var x, y, dx = x2-x1, dy = y2-y1, len = Math.hypot(dx,dy), ux = len>0 ? dx/len : 0, uy = len>0 ? dy/len : 0;
-   return this.beg()
-                .style({fs:"@ls",lc:"round",lj:"round"})
+   return this.beg({fs:"@ls",lc:"round",lj:"round"})
                 .p().m(x1,y1).l(x=x2,y=y2)
                 .m(x,y)
                 .l(x+=-12*ux-2.5*uy,y+=-12*uy+2.5*ux)
                 .a(-Math.PI/3,x+5*uy,y-5*ux)
                 .z()
-                .fill().stroke()
-              .end()
-              .proxy(g2.prototype.lin.cmd.proxy,[x1,y1,x2,y2]);
+                .drw()
+              .end();
+//              .proxy(g2.prototype.lin.proxy,[x1,y1,x2,y2]);
 }
 /**
  * Angular vector
@@ -98,14 +105,13 @@ g2.prototype.avec = function avec(x,y,r,w,dw) {
    var wa = dw >= 0 ? -12/r : 12/r,
        c2 = Math.cos(w+dw+wa), s2 = Math.sin(w+dw+wa);
    return this.beg()
-                .style({fs:"@ls",lc:"round",lj:"round"})
-                .arc(x,y,r,w,dw)
+                .arc(x,y,r,w,dw,{fs:"transparent"})
                 .p()
                 .m(x+r*Math.cos(w+dw),y+r*Math.sin(w+dw))
                 .l(x+(r-2.5)*c2,y+(r-2.5)*s2)
                 .a(Math.PI/3,x+(r+2.5)*c2,y+(r+2.5)*s2)
                 .z()
-                .fill().stroke()
+                .drw({fs:"@ls",lc:"round",lj:"round"})
               .end();
 }
 /**
@@ -119,8 +125,7 @@ g2.prototype.avec = function avec(x,y,r,w,dw) {
 g2.prototype.dim = function dim(x1,y1,x2,y2,opts) {
    var x, y, dx = x2-x1, dy = y2-y1, len = Math.hypot(dx,dy), inside = opts && opts.pos === "out" ? -1 : 1,
        ux = inside*(len>0 ? dx/len : 0), uy = inside*(len>0 ? dy/len : 0);
-   return this.beg()
-                .style({fs:"@ls",lc:"round",lj:"round"})
+   return this.beg({fs:"@ls",lc:"round",lj:"round"})
                 .p().l(x1,y1).l(x2,y2)
                 .m(x=x1,y=y1)
                 .l(x+=12*ux-2.5*uy,y+=12*uy+2.5*ux)
@@ -132,9 +137,9 @@ g2.prototype.dim = function dim(x1,y1,x2,y2,opts) {
                 .a(-Math.PI/3,x+=5*uy,y+=-5*ux)
                 .z()
                 .m(x2+3*uy,y2-3*ux).l(x2-3*uy,y2+3*ux).z()
-                .fill().stroke()
-              .end()
-              .proxy(g2.prototype.lin.cmd.proxy,[x1,y1,x2,y2]);
+                .drw()
+              .end();
+//              .proxy(g2.prototype.lin.proxy,[x1,y1,x2,y2]);
 }
 /**
  * Angular dimension
@@ -154,8 +159,7 @@ g2.prototype.adim = function adim(x,y,r,w,dw,opts) {
        c1m = Math.cos(w+wm), s1m = Math.sin(w+wm),
        c2m = Math.cos(w+dw-wm), s2m = Math.sin(w+dw-wm);
    return this.beg()
-                .style({fs:"@ls",lc:"round",lj:"round"})
-                .arc(x,y,r,w,dw)
+                .arc(x,y,r,w,dw,{fs:"transparent"})
                 .p()
                 .m(x+r*c1,y+r*s1)
                 .l(x+ri*c1m,y+ri*s1m)
@@ -169,7 +173,7 @@ g2.prototype.adim = function adim(x,y,r,w,dw,opts) {
                 .z()
                 .m(x+ri*c2,y+ri*s2)
                 .l(x+ra*c2,y+ra*s2)
-                .fill().stroke()
+                .drw({fs:"@ls",lc:"round",lj:"round"})
               .end();
 }
 /**
@@ -183,10 +187,10 @@ g2.prototype.adim = function adim(x,y,r,w,dw,opts) {
 g2.prototype.slider = function slider(x,y,w,b,h) {
    b = b || 32;
    h = h || 16;
-   return this.beg(x,y,w)
-                .style({fs:"@nodfill"})
+   return this.beg({x:x,y:y,w:w,fs:"@linkfill"})
                 .rec(-b/2,-h/2,b,h)
               .end();
+//              .proxy(g2.prototype.rec.proxy,[x,y,b,h]);
 }
 
 /**
@@ -195,7 +199,7 @@ g2.prototype.slider = function slider(x,y,w,b,h) {
  * @param {coord} y1 Start y coord
  * @param {coord} x2 End x coord
  * @param {coord} y2 End y coord
- * @param {scalar} h Spring width and height
+ * @param {scalar} h Spring size
  */
 g2.prototype.spring = function(x1,y1,x2,y2,h) {
    var len = Math.hypot(x2-x1,y2-y1);
@@ -212,8 +216,8 @@ g2.prototype.spring = function(x1,y1,x2,y2,h) {
                  .l(xm+( l.ux/6-l.uy/2)*h,ym+( l.uy/6+l.ux/2)*h)
                  .l(xm+l.ux*h/2,ym+l.uy*h/2)
                  .l(l.x2,l.y2)
-                 .stroke()
-                 .proxy(g2.prototype.lin.cmd.proxy,[x1,y1,x2,y2]);
+                 .stroke();
+//                 .proxy(g2.prototype.lin.proxy,[x1,y1,x2,y2]);
    }
 };
 
@@ -223,7 +227,7 @@ g2.prototype.spring = function(x1,y1,x2,y2,h) {
  * @param {coord} y1 Start y coord
  * @param {coord} x2 End x coord
  * @param {coord} y2 End y coord
- * @param {number} h Damper symbol width and height
+ * @param {number} h Damper symbol size
  */
 g2.prototype.damper = function(x1,y1,x2,y2,h) {
    var len = Math.hypot(x2-x1,y2-y1);
@@ -242,16 +246,15 @@ g2.prototype.damper = function(x1,y1,x2,y2,h) {
                  .l(xm+( l.ux+l.uy)*h/2,ym+( l.uy-l.ux)*h/2)
                  .m(xm,ym)
                  .l(l.x2,l.y2)
-                 .stroke()
-                 .proxy(g2.prototype.lin.cmd.proxy,[x1,y1,x2,y2]);
+                 .stroke();
+//                 .proxy(g2.prototype.lin.proxy,[x1,y1,x2,y2]);
    }
 };
 
-g2.prototype.bar = function bar(x,y,w,l) { 
-   return this.beg(x,y,w)
-                .style({ls:"@nodcolor",lw:4})
-                .lin(0,0,l,0)
-              .end().proxy(g2.prototype.lin.cmd.proxy,[x,y,x+l*(w?Math.cos(w):1),y+l*(w?Math.sin(w):0)]);
+g2.prototype.link = function(pts) {
+   return this.beg({fs:"@linkfill",ls:"@linkcolor",lw:6,lj:"round"})
+                .ply(pts,true,{fmt:"{x,y}"})
+              .end();
 }
 /**
  * Polygon ground.
@@ -259,13 +262,13 @@ g2.prototype.bar = function bar(x,y,w,l) {
  * @returns {object} this
  * @param {array} parr Array of points
  * @param {boolean} closed Draw closed polygon.
- * @param {object} opts { fmt:<item-format>,itr:<iterator>,h:<line width>,sign:<left(1) | right(-1)>}
+ * @param {object} opts { h:<line width>,sign:<left(1) | right(-1)>}
  */
 g2.prototype.ground = function ground(parr,closed,opts) {
    var i=0, p0, pp, pn, p, e0, dx, dy, ep, en, len, lam, eq = [],
        h = opts && opts.h || 4,
        sign = opts && opts.sign || 1,
-       itr =  opts && (opts.itr || opts.fmt && g2.prototype.ply.iterators[opts.fmt]) || g2.prototype.ply.itr;
+       itr =  g2.prototype.ply.itrOf(parr,opts);
    p0 = pp = itr(parr,i=0);
    eq.push(p0);
    p = itr(parr,i=1);
@@ -292,42 +295,19 @@ g2.prototype.ground = function ground(parr,closed,opts) {
       eq[0] = {x:p0.x-sign*(h+1)*e0.y, y:p0.y+sign*(h+1)*e0.x};
       eq.push({x:p.x -sign*(h+1)*ep.y, y:p.y +sign*(h+1)*ep.x});
    }
-   return this.beg(-0.5,-0.5)
-                 .style({lwnosc:false,fs:"transparent",lw:2})
+   return this.beg({x:-0.5,y:-0.5,lwnosc:false,fs:"transparent",lw:2})
                  .ply(parr,closed,opts)
                  .style({ls:"@nodfill2",lw:2*h})
                  .ply(eq,closed,{fmt:"{x,y}"})
               .end()
 };
 
-/*
- * Helper method for being called by 'g2.prototype.findCmdIdx'.
- * Test command object for providing proxy function.
- * @method
- * @returns {bool} Command object provides proxy function or not.
- * @param {object} cmd  Command object.
- */
-g2.prototype._hasProxy = function(cmd) { return cmd.proxy || cmd.c.proxy; }
-/*
- * Helper method for being called by 'g2.prototype.findCmdIdx'.
- * Proxy command object for reusing another proxy function .
- * @method
- * @returns {bool} Command object provides proxy function or not.
- * @param {function} fnc  Proxy function.
- * @param {array} arr  Arguments array.
- */
-g2.prototype.proxy = function proxy(fnc,argarr) {
-   this.cmds.push({proxy:fnc,a:argarr,c:proxy.cmd});
-   return this;
-};
-g2.prototype.proxy.cmd = function(){};
-
 
 // marker symbols ...
 g2.symbol.dot = g2().style({lwnosc:true}).cir(0,0,2);
 g2.symbol.rec = g2().style({lwnosc:true}).rec(-2,-2,4,4);
 g2.symbol.tilde = g2().p().m(0,3).a(Math.PI/2,0,0).a(-Math.PI/2,0,-3).style({lwnosc:true,lc:"round"}).stroke();
-g2.symbol.arrow = g2().style().p().m(0,0).l(-7,-2).a(Math.PI/3,-7,2).z().style({lwnosc:true,lj:"round"}).drw();
+g2.symbol.arrow = g2().p().m(0,0).l(-7,-2).a(Math.PI/3,-7,2).z().style({lwnosc:true,lj:"round"}).drw();
 g2.symbol.tick = g2().p().m(0,-2).l(0,2).style({lwnosc:true,lc:"round"}).stroke();
 g2.symbol.arrowtick = g2().p().m(0,-2).l(0,2).m(0,0).l(-7,-2).a(Math.PI/3,-7,2).z().style({lwnosc:true,lc:"round",lj:"round"}).drw();
 
@@ -352,8 +332,8 @@ g2.symbol.arrowtick = g2().p().m(0,-2).l(0,2).m(0,0).l(-7,-2).a(Math.PI/3,-7,2).
  * ![Example](img/line.png "Example")
  */
 g2.prototype.mrk = function mrk() {
-   var proxyIdx = this.findCmdIdx(this._hasProxy);
-   if (arguments && arguments.length && proxyIdx)   // even number of arguments required .. not tested here ?
+   var idx = this.findCmdIdx(this._hasProxy);
+   if (arguments && arguments.length && idx)   // even number of arguments required .. not tested here ?
       this.cmds.push({c:mrk.cmd,a:[this,proxyIdx,Array.prototype.slice.call(arguments)]});
    return this;
 };
@@ -379,76 +359,65 @@ g2.prototype.mrk.cmd = function mrk_c(self,idx,list) {
 };
 
 /**
- * Add label to certain elements or use it standalone. 
+ * Add label to certain elements. 
  * See element for support and meaning of arguments.
  * @method
  * @returns {object} g2
- * @param {string} s Label
+ * @param {string} str Label text
  * @param {string} loc Label location. [optional]
  *                     'c': centered, wrt. rec, cir, arc
  *                     'l','r': left, right, wrt. lin
  *                     'n', 'ne', 'e', 'se', 's', 'sw', 'w', or 'nw': cardinal directions
  *                     'p': strict positional.
- * @param {float} r Radius / distance from the symbol center to label text. [optional]
- * @param {float} w Angular position in rad. [optional]
- * @param {float} x X coordinate. [optional]
- * @param {float} y Y coordinate. [optional]
+ * @param {float} off  Offset distance [optional].
  * @example 
  *	
- *	g2()
- *	.cir(25,25,20)
- *	.label("Circle","se")
- *	.gnd(100,25,0,20)
- *	.label("Ground")
- *	.exe(ctx);
- * ![Example](img/label.png "Example")
+ *	g2().use("nod",{x:25,y:25}).label("A","se")
+ *	    .exe(ctx);
  */
 g2.prototype.label = function label(str,loc,off) {
-   var proxyIdx = this.findCmdIdx(g2.prototype._hasProxy);
-   if (proxyIdx)
-      this.cmds.push({c:label.cmd,a:[this,proxyIdx,str,loc,off]});
+   var idx = this.findCmdIdx(g2.prototype._hasProxy);
+   if (idx) {
+      var cmd = this.cmds[idx],
+         proxy = cmd && (cmd.proxy || cmd.c && cmd.c.proxy),
+         obj = proxy && proxy.apply(this,cmd.a),
+         p = obj && obj.p(loc || "p") || {x:0,y:0,dx:0,dy:0},
+         offset = (off+0 === off) ? (off || 1) // isnumeric ...
+                : (off === "left" ? -1 : 1),   // left of ... ?
+         xoff = p.dy*offset, yoff = -p.dx*offset;
+      p.x += xoff;
+      p.y += yoff;
+      return this.txt(str,p.x,p.y,0,{thal:(xoff>0 ? "left" : xoff<0 ? "right" : "center"), tval:(yoff>0 ? "bottom" : yoff<0 ? "top" : "middle")});
+   }
+};
+g2.State.labelOffset = 10;
+
+/*
+ * Helper method for being called by 'g2.prototype.findCmdIdx'.
+ * Test command object for providing proxy function.
+ * @method
+ * @returns {bool} Command object provides proxy function or not.
+ * @param {object} cmd  Command object.
+ */
+g2.prototype._hasProxy = function(cmd) { return cmd.proxy || cmd.c.proxy; }
+/*
+ * Helper method for being called by 'g2.prototype.findCmdIdx'.
+ * Proxy command object for reusing another proxy function .
+ * @method
+ * @returns {bool} Command object provides proxy function or not.
+ * @param {function} fnc  Proxy function.
+ * @param {array} arr  Arguments array.
+ */
+g2.prototype.proxy = function proxy(fnc,argarr) {
+   this.cmds.push({proxy:fnc,a:argarr,c:function(){}});
    return this;
 };
 
-g2.prototype.label.cmd = function label_c(self,idx,s,loc,off) {
-   var state = self.state, 
-       cmd = self.cmds[idx], 
-       proxy = cmd && (cmd.proxy || cmd.c && cmd.c.proxy),
-       obj = proxy && proxy.apply(self,cmd.a),
-       p = obj && obj.p(loc || "p") || {x:0,y:0,dx:0,dy:0},
-       offset = (off+0 === off) ? off // isnumeric ...
-              : (off === "left" ? -1 : 1)*2*state.get("labelOffset"),
-       xoff = p.dy*offset, yoff = -p.dx*offset,
-       foc = state.get("foc");  // fontcolor
-
-   p.x += xoff;
-   p.y += yoff;
-
-   this.save()
-   if (state.cartesian) {
-      this.scale(1,-1);
-      p.y = -p.y;
-   }
-   this.textAlign = xoff > 0 ? "left" : xoff < 0 ? "right" : "center";
-   this.textBaseline = yoff > 0 ? "bottom" : yoff < 0 ? "top" : "middle";
-
-   if (foc !== g2.transparent) {
-      this.fillStyle = foc;
-      this.fillText(s,p.x,p.y);
-   }
-   else
-      this.strokeText(s,p.x,p.y);
-   this.restore();
-};
-
-g2.State.labelOffset = 3;
-
-g2.prototype.lin.cmd.proxy = function(x1,y1,x2,y2) {
+g2.prototype.lin.proxy = function(x1,y1,x2,y2) {
    var ax = x2 - x1, ay = y2 - y1, len = Math.hypot(ax,ay),
        dx = len > 0 ? ax/len : 0, dy = len > 0 ? ay/len : 0,
        du = len < 40  ? 1/2 : 1 / Math.floor(len/20),
        slip = len < 20 ? 1/20*len : 1;
-       
    return {
       p: function(loc) {
          var t = loc==="beg" ? 0 : loc==="end" ? 1 : (loc==="mid" || loc === "p") ? 0.5 : loc;
@@ -465,7 +434,7 @@ g2.prototype.lin.cmd.proxy = function(x1,y1,x2,y2) {
       s: function(u) { var uu = u*u; return 3*uu - 2*u*uu; }
    };
 };
-g2.prototype.arc.cmd.proxy = function(x0,y0,r,w,dw) {
+g2.prototype.arc.proxy = function(x0,y0,r,w,dw) {
    var len = Math.abs(r*dw),
        du = len < 30 ? 1/Math.max(3,Math.floor(Math.abs(dw)*2+0.5))
                      : 1 / Math.floor(len/10),
@@ -490,15 +459,14 @@ g2.prototype.arc.cmd.proxy = function(x0,y0,r,w,dw) {
        : function(u) { var uu = u*u; return 3*uu - 2*u*uu; }
    };
 };
-g2.prototype.ply.cmd.proxy = function(parr,closed) {
-   var itr = g2.prototype.ply.itr, n = itr(parr).count, imid = 0, len = 0;
-console.log("label at ply ...")
+g2.prototype.ply.proxy = function(parr,closed) {
+   var itr = g2.prototype.ply.itr, n = itr(parr).count, len = 0;
    return {
       loc: function(q) {
          return q==="beg" ? "#0"
               : q==="end" ? "#"+Math.max(n-1,0)
               : q==="mid" ? function(){var a=[];for(var i=1;i<n-1;i++)a.push("#"+i);return a;}()
-              : loc;
+              : q;
       },
       p: function(loc) {
          if (typeof loc === "string" && loc[0] === "#")
@@ -521,10 +489,10 @@ console.log("label at ply ...")
       },
       length: function() {
          if (len === 0) {
-            var i,j,pi=itr(parr,0),pj,t;
+            var i,j,pi=itr(parr,0),pj;
             for (i=0,j=1; i<(closed ? n : n-1); i++,j=(i+1)%n) {
                pj = itr(parr,j);
-               len += Math.hypot(pj.x-pi.x, p[j].y-p[i].y);
+               len += Math.hypot(pj.x-pi.x, pj.y-pi.y);
                pi = pj;
             }
          }
@@ -533,16 +501,16 @@ console.log("label at ply ...")
    };
 };
 
-g2.prototype.rec.cmd.proxy = function(x,y,b,h) {
-   const sq2 = Math.sqrt(2);
+g2.prototype.rec.proxy = function(x,y,b,h) {
+   var sq2 = Math.sqrt(2);
    var d = this.state.cartesian
-         ? { c:[0,0,1],e:[1,0,1],ne:[1,1,sq2],n:[0,1,sq2],nw:[-1,1,sq2],w:[-1,0,1],sw:[-1,-1,sq2],s:[0,-1,1],se:[1,-1,sq2] }
-         : { c:[0,0,1],e:[1,0,1],ne:[1,-1,sq2],n:[0,-1,sq2],nw:[-1,-1,sq2],w:[-1,0,1],sw:[-1,1,sq2],s:[0,1,1],se:[1,1,sq2] };
+         ? { c:[0,0,1],e:[1,0,1],ne:[1,1,sq2],n:[0,1,1],nw:[-1,1,sq2],w:[-1,0,1],sw:[-1,-1,sq2],s:[0,-1,1],se:[1,-1,sq2] }
+         : { c:[0,0,1],e:[1,0,1],ne:[1,-1,sq2],n:[0,-1,1],nw:[-1,-1,sq2],w:[-1,0,1],sw:[-1,1,sq2],s:[0,1,1],se:[1,1,sq2] };
    return {
       p: function(loc) {
          var q = d[loc || "c"];
-         return { x: x + (1 + q[0])*b/2,
-                  y: y + (1 + q[1])*h/2,
+         return { x: x + q[0]*b/2,
+                  y: y + q[1]*h/2,
                   dx: -q[1]/q[2], 
                   dy:  q[0]/q[2]
          };
@@ -550,8 +518,8 @@ g2.prototype.rec.cmd.proxy = function(x,y,b,h) {
    };
 };
 
-g2.prototype.cir.cmd.proxy = function(x,y,r) {
-   const sq2 = Math.sqrt(2)/2;
+g2.prototype.cir.proxy = function(x,y,r) {
+   var sq2 = Math.sqrt(2)/2;
    var d = this.state.cartesian
          ? { p:[0,0],c:[0,0],e:[1,0],ne:[sq2, sq2],n:[0, 1],nw:[-sq2, sq2],w:[-1,0],sw:[-sq2,-sq2],s:[0,-1],se:[sq2,-sq2] }
          : { p:[0,0],c:[0,0],e:[1,0],ne:[sq2,-sq2],n:[0,-1],nw:[-sq2,-sq2],w:[-1,0],sw:[-sq2, sq2],s:[0, 1],se:[sq2, sq2] };
@@ -567,11 +535,11 @@ g2.prototype.cir.cmd.proxy = function(x,y,r) {
    };
 };
 
-g2.prototype.use.cmd.proxy = function(self,g,x,y,w,scl) {
-   return g2.prototype.cir.cmd.proxy.call(this,x,y,2*this.state.get("labelOffset"));
+g2.prototype.use.proxy = function(g,args) {
+   return g2.prototype.cir.proxy.call(this,args.x,args.y,1);
 };
 
-g2.prototype.end.cmd.proxy = function(self,begidx) {
-   var begcmd = self.cmds[begidx];
-   return g2.prototype.cir.cmd.proxy.call(this,begcmd.a[1]||0,begcmd.a[2]||0,2*this.state.get("labelOffset"));
+g2.prototype.end.proxy = function(begidx) {
+   var begcmd = this.myBeg();
+   return g2.prototype.cir.proxy.call(this,begcmd.a[1]||0,begcmd.a[2]||0,3);
 };

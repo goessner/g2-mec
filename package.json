@@ -1,0 +1,24 @@
+{
+  "name": "g2-mec",
+  "version": "0.2.0",
+  "description": "g2-mec - Mechanical extension for g2",
+  "main": "g2.mec.js",
+  "scripts": {
+    "build": "npm run minify && npm run jsdoc && npm run cpy",
+    "minify": "uglifyjs ./src/g2.mec.js -o ./dist/g2.mec.min.js --comments -m",
+    "jsdoc": "jsdoc2md ./src/g2.mec.js > ./api/readme.md",
+    "cpy": "copyfiles -f ./src/g2.mec.js ./dist"
+  },
+  "author": "Stefan Goessner <fang03@web.de>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/goessner/g2-mec.git"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "concat": "^1.0.0",
+    "jsdoc-to-markdown": "^1.3.2",
+    "jslint": "^0.9.5",
+    "uglifyjs": "^2.4.10"
+  }
+}

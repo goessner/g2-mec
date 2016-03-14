@@ -8,10 +8,33 @@
 
 <body>
     <h1>g2 - symbols</h1>
-    <canvas id="c" width="300" height="300"></canvas>
-    <script src='../../g2/g2.js'></script>
-    <script src='../g2.mec.js'></script>
+    <div id="svg" data-width="626", data-height="101"></div>
+    <canvas id="c" width="625" height="100"></canvas>
+    <script src='../../g2/dist/g2.js'></script>
+    <script src='../../g2-svg/src/g2.svg.js'></script>
+    <script src='../src/g2.mec.js'></script>
     <script>
+       var ctx = document.getElementById("c").getContext("2d"),
+           rec = ctx.canvas.getBoundingClientRect(),
+           x  = 0, y = 65, 
+           g = g2()
+                .clr()
+                .cartesian()
+                .style({lw:1,foz:14,fof:"cursive",thal:"center",tval:"middle",labelOffset:10})
+                .use("origin",{x:x+=50,y:y})
+                .use("nod",{x:x+=50,y:y})
+                .use("dblnod",{x:x+=50,y:y})
+                .use("nodfix",{x:x+=50,y:y})
+                .use("dblnodfix",{x:x+=50,y:y})
+                .use("nodflt",{x:x+=50,y:y})
+                .use("dblnodflt",{x:x+=50,y:y})
+                .use("pol",{x:x+=50,y:y})
+                .use("gnd",{x:x+=50,y:y})
+                .exe(ctx)
+       .exe(document.getElementById("svg"));
+//       .exe(svg)
+       console.log(document.getElementById("svg").innerHTML);
+
        function onmove(e) {
           if (e.buttons !== undefined ? e.buttons : (e.which || e.button)) { // any button pressed ...
              var dx = e.movementX || e.mozMovementX || e.webkitMovementX || 0,
@@ -32,22 +55,6 @@
           return false; 
        }
        function render() { g.exe(ctx); requestAnimationFrame(render); }
-
-       var ctx = document.getElementById("c").getContext("2d"),
-           rec = ctx.canvas.getBoundingClientRect(),
-           pi = Math.PI,
-           rA = {x:50,y:50},  rB= {x:250,y:50},
-           rC = {x:50,y:150}, rD= {x:150,y:150},
-           rE = {x:50,y:250},
-           g = g2({cartesian:true,pan:{dx:10,dy:10}})
-                .clr()
-                .style({lw:3,foz:14,fof:"cursive",thal:"center",tval:"middle",lwnosc:true,labelOffset:10})
-                .use("nodfix",rA.x,rA.y)
-                .use("nod",rB.x,rB.y)
-                .use("nod",rC.x,rC.y)
-                .use("nod",rD.x,rD.y)
-                .use("nodflt",rD.x,rD.y,pi/2)
-                .exe(ctx);
 
        ctx.canvas.addEventListener("mousemove", onmove, false);
        ctx.canvas.addEventListener("wheel", onwheel, false);

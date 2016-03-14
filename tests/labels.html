@@ -2,16 +2,28 @@
 <html>
 <head>
     <meta charset='utf-8'>
-    <title>g2.mec - elements</title>
+    <title>g2 - labels</title>
     <style> canvas { border: 1px solid #000; } </style>
 </head>
 
 <body>
-    <h1>g2.mec - elements</h1>
-    <canvas id="c" width="520" height="100"></canvas>
+    <h1>g2 - labels</h1>
+    <canvas id="c" width="625" height="100"></canvas>
     <script src='../../g2/dist/g2.js'></script>
     <script src='../g2.mec.js'></script>
     <script>
+       var ctx = document.getElementById("c").getContext("2d"),
+           rec = ctx.canvas.getBoundingClientRect(),
+           x  = 0, y = 65, 
+           g = g2()
+                .cartesian()
+                .clr()
+                .style({lw:1,foz:14,fs:"red",fof:"cursive",thal:"center",tval:"middle"})
+                .use("nod",{x:50,y:65})
+                .label("node","nw",5)
+                .cir(200,50,20).label("cir","s",1)
+                .exe(ctx);
+
        function onmove(e) {
           if (e.buttons !== undefined ? e.buttons : (e.which || e.button)) { // any button pressed ...
              var dx = e.movementX || e.mozMovementX || e.webkitMovementX || 0,
@@ -32,26 +44,6 @@
           return false; 
        }
        function render() { g.exe(ctx); requestAnimationFrame(render); }
-
-       var ctx = document.getElementById("c").getContext("2d"),
-           rec = ctx.canvas.getBoundingClientRect(),
-           pi = Math.PI,
-           g =  g2()
-                  .cartesian()
-                  .pan(10,10)
-                  .clr()
-//                  .grid()
-                  .style({ls:"@nodcolor",fs:"orange",lw:2,foz:14,fof:"cursive",thal:"center",tval:"middle",lwnosc:true,labelOffset:10})
-                  .vec(10,50,50,50).txt("vec",30,12)
-                  .avec(80,20,35,120/180*pi,-60/180*pi).txt("avec",80,12)
-                  .dim(110,50,150,50,{pos:"in"}).txt("dim",130,12)
-                  .adim(180,20,35,120/180*pi,-60/180*pi,{pos:"in"}).txt("adim",180,12)
-                  .slider(230,50,0,40).txt("slider",230,12)
-                  .spring(260,50,300,50).txt("spring",280,12)
-                  .damper(310,50,350,50).txt("damper",330,12)
-                  .ground([360,40,390,40,390,60],false,{sign:-1}).txt("ground",380,12)
-                  .lin(420,50,480,50,{ld:"@dashdot"}).txt("center line",450,12)
-                  .exe(ctx);
 
        ctx.canvas.addEventListener("mousemove", onmove, false);
        ctx.canvas.addEventListener("wheel", onwheel, false);
