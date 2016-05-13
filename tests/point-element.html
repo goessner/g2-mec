@@ -7,39 +7,17 @@
 </head>
 
 <body>
-    <canvas id="c" width="300" height="300"></canvas>
+    <canvas id="c" width="100" height="100"></canvas>
     <script src='../../g2/g2.js'></script>
     <script src='../g2.mec.js'></script>
     <script>
-       function onmove(e) {
-          if (e.buttons !== undefined ? e.buttons : (e.which || e.button)) { // any button pressed ...
-             var dx = e.movementX || e.mozMovementX || e.webkitMovementX || 0,
-                 dy = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
-             g.pan(dx, g.state.cartesian ? -dy : dy);
-          }
-          e.preventDefault(); 
-          return false; 
-       }
-       function onwheel(e) {
-          var delta = Math.max(-1,Math.min(1,e.deltaY||e.wheelDelta)),
-              x = e.clientX - Math.floor(rec.left),
-              y = e.clientY - Math.floor(rec.top);
-          if (g.state.cartesian)
-             y = rec.height - y;
-          g.zoom(delta>0?9/10:10/9,x,y);
-          e.preventDefault(); 
-          return false; 
-       }
-       function render() { g.exe(ctx); requestAnimationFrame(render); }
-
        var ctx = document.getElementById("c").getContext("2d"),
-           rec = ctx.canvas.getBoundingClientRect(),
-           g = g2({cartesian:true})
-                .clr()
+           rec = ctx.canvas.getBoundingClientRect(), r = 30,
+           g = g2()
+                .cartesian()
                 .style({ls:"#666",ld:"@dot"})
-                .cir(150,150,30)
-                .style({ls:"@nodcolor",ld:"@solid",foz:16,fof:"cursive",thal:"center",tval:"middle",labelOffset:10})
-                .use("nodfix",150,150).label("s","s")
+                .cir(50,50,r).label("c","c")
+                                      .label("s","s")
                                       .label("se","se")
                                       .label("e","e")
                                       .label("ne","ne")
@@ -48,10 +26,6 @@
                                       .label("w","w")
                                       .label("sw","sw")
                 .exe(ctx);
-
-       ctx.canvas.addEventListener("mousemove", onmove, false);
-       ctx.canvas.addEventListener("wheel", onwheel, false);
-       render();     
    </script>
 </body>
 </html>

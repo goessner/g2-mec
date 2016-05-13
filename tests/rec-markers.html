@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>g2 - rectangle markers</title>
+    <style> canvas { border: 1px solid #000; background-color: #eee} </style>
+</head>
+
+<body>
+    <canvas id="c" width="101" height="101"></canvas>
+    <script src='../../g2/g2.js'></script>
+    <script src='../g2.mec.js'></script>
+    <script>
+       var ctx = document.getElementById("c").getContext("2d"),
+           g = g2()
+                .cartesian()
+                .style({ls:"#666"})
+                .rec(20,25,60,50).mark("dot",["c","e","ne","n","nw","w","sw","s","se"])
+                .exe(ctx);
+   </script>
+</body>
+</html>

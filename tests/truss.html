@@ -2,11 +2,12 @@
 <html>
 <head>
     <meta charset='utf-8'>
-    <title>g2 - symbols</title>
+    <title>g2 - truss</title>
     <style> canvas { border: 1px solid #000; background-color: #eee} </style>
 </head>
 
 <body>
+    <h1>g2 - truss</h1>
     <canvas id="c" width="300" height="300"></canvas>
     <script src='../../g2/g2.js'></script>
     <script src='../g2.mec.js'></script>
@@ -34,27 +35,26 @@
 
        var ctx = document.getElementById("c").getContext("2d"),
            rec = ctx.canvas.getBoundingClientRect(),
-           xA = 50, yA = 50,  xB = 250, yB = 50,
-           xC = 50, yC =150,  xD = 150, yD =150,
-           xE = 50, yE =250,
-           g = g2({cartesian:true,pan:{dx:10,dy:10}})
+           A = {x:50,y:50},  B = {x:250,y:50},
+           C = {x:50,y:150}, D = {x:150,y:150},
+           E = {x:50,y:250},
+           g = g2()
                 .clr()
-                .style({lw:3,ls:"@nodcolor",foz:14,fof:"cursive",thal:"center",tval:"middle",labelOffset:10})
-                .ply([xA,yA,xB,yB,xE,yE,xA,yA,xD,yD,xC,yC])
-                .style({lw:2,ls:"orange"})
-                .vec(xB,yB,xB,yB-50)
-                .vec(xD,yD,xD+80,yD)
-                .style({lw:1,ls:"blue"})
-                .use("nodfix",xA,yA)
-                .use("nod",xB,yB)
-                .use("nod",xC,yC)
-                .use("nod",xD,xD)
-                .use("nodflt",xE,yE,-Math.PI/2)
+                .cartesian()
+                .pan(10,10)
+                .link2([A,B,E,A,D,C])
+                .vec(B,{dx:0,dy:-50},{lw:2,ls:"darkred"})
+                .vec(D,{dx:80,dy:0},{lw:2,ls:"darkred"})
+                .use("nodfix",A)
+                .use("nod",B)
+                .use("nod",C)
+                .use("nod",D)
+                .use("nodflt",{x:E.x,y:E.y,w:-Math.PI/2})
                 .exe(ctx);
 
        ctx.canvas.addEventListener("mousemove", onmove, false);
        ctx.canvas.addEventListener("wheel", onwheel, false);
-       render();     
+       render();
    </script>
 </body>
 </html>

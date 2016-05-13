@@ -8,32 +8,31 @@
 
 <body>
     <h1>g2 - symbols</h1>
-    <div id="svg" data-width="626", data-height="101"></div>
-    <canvas id="c" width="625" height="100"></canvas>
-    <script src='../../g2/dist/g2.js'></script>
-    <script src='../../g2-svg/src/g2.svg.js'></script>
-    <script src='../src/g2.mec.js'></script>
+    <div id="svg" data-width="630", data-height="101"></div>
+    <canvas id="c" width="630" height="100"></canvas>
+    <script src='../../g2/g2.js'></script>
+    <script src='../g2.mec.js'></script>
     <script>
        var ctx = document.getElementById("c").getContext("2d"),
            rec = ctx.canvas.getBoundingClientRect(),
-           x  = 0, y = 65, 
+           x  = 0, y = 55, dx = 65, dy = 25,
            g = g2()
                 .clr()
                 .cartesian()
-                .style({lw:1,foz:14,fof:"cursive",thal:"center",tval:"middle",labelOffset:10})
-                .use("origin",{x:x+=50,y:y})
-                .use("nod",{x:x+=50,y:y})
-                .use("dblnod",{x:x+=50,y:y})
-                .use("nodfix",{x:x+=50,y:y})
-                .use("dblnodfix",{x:x+=50,y:y})
-                .use("nodflt",{x:x+=50,y:y})
-                .use("dblnodflt",{x:x+=50,y:y})
-                .use("pol",{x:x+=50,y:y})
-                .use("gnd",{x:x+=50,y:y})
+                .style({lw:1,foz:14,fof:"cursive",thal:"center",tval:"middle",labelOffset:20})
+                .use("origin",{x:x+=dx,y:y}).label("origin","s",dy)
+                .use("nod",{x:x+=dx,y:y}).label("nod","s",dy)
+                .use("dblnod",{x:x+=dx,y:y}).label("dblnod","s",dy)
+                .use("nodfix",{x:x+=dx,y:y}).label("nodfix","s",dy)
+                .use("dblnodfix",{x:x+=dx,y:y}).label("dblnodfix","s",dy)
+                .use("nodflt",{x:x+=dx,y:y}).label("nodflt","s",dy)
+                .use("dblnodflt",{x:x+=dx,y:y}).label("dblnodflt","s",dy)
+                .use("pol",{x:x+=dx,y:y}).label("pol","s",dy)
+                .use("gnd",{x:x+=dx,y:y}).label("gnd","s",dy)
                 .exe(ctx)
-       .exe(document.getElementById("svg"));
-//       .exe(svg)
-       console.log(document.getElementById("svg").innerHTML);
+//       .exe(document.getElementById("svg"));
+//       .exe("svg")
+//       console.log(document.getElementById("svg").innerHTML);
 
        function onmove(e) {
           if (e.buttons !== undefined ? e.buttons : (e.which || e.button)) { // any button pressed ...

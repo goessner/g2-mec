@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>g2 - poly-markers</title>
+    <style> canvas { border: 1px solid #000; background-color: #eee} </style>
+</head>
+
+<body>
+    <canvas id="c" width="300" height="300"></canvas>
+    <script src='../../g2/g2.js'></script>
+    <script src='../g2.mec.js'></script>
+    <script>
+       var ctx = document.getElementById("c").getContext("2d"),
+           g = g2({cartesian:true})
+                .clr()
+                .style({ls:"red",ld:"@solid",foz:16,fof:"cursive",thal:"center",tval:"middle",labelOffset:10})
+                .lin(50,50,200,50).mark("dot",[1,0.25,0.75])
+                                  .mark("tick",[0.5])
+                .exe(ctx);
+   </script>
+</body>
+</html>

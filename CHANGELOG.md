@@ -8,4 +8,17 @@ All notable changes to this project will be documented in this file. This projec
 ### Added
 
     CHANGELOG.md @goessner.
+    
+## 0.2.3 - 2016-05-03
+
+### Changed
+
+    Transformation bug removed @goessner.
+
+## 0.3.0 - 2016-05-13
+
+### Changed
+
+    Fundamental changes also affecting the api.
+    See documentation and API for details. @goessner.
 

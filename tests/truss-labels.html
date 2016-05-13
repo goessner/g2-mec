@@ -34,33 +34,34 @@
 
        var ctx = document.getElementById("c").getContext("2d"),
            rec = ctx.canvas.getBoundingClientRect(),
-           xA = 50, yA = 50,  xB = 250, yB = 50,
-           xC = 50, yC =150,  xD = 150, yD =150,
-           xE = 50, yE =250,
-           g = g2({cartesian:true,pan:{dx:10,dy:10}})
+           A = {x:50,y:50},  B = {x:250,y:50},
+           C = {x:50,y:150}, D = {x:150,y:150},
+           E = {x:50,y:250},
+           g = g2()
                 .clr()
-                .style({lw:3,ls:"@nodcolor",foz:12,fof:"cursive",foc:"green",thal:"center",tval:"middle",labelOffset:3})
-                .lin(xA,yA,xB,yB).label("1")
-                .lin(xA,yA,xC,yC).label("2")
-                .lin(xA,yA,xD,yD).label("3")
-                .lin(xB,yB,xD,yD).label("4")
-                .lin(xC,yC,xD,yD).label("5")
-                .lin(xC,yC,xE,yE).label("6")
-                .lin(xD,yD,xE,yE).label("7")
-                .style({lw:2,ls:"orange",foc:"@nodcolor"})
-                .vec(xB,yB,xB,yB-50).label("F","end","left")
-                .vec(xD,yD,xD+80,yD).label("2F","mid")
-                .style({ls:"@nodcolor",lw:1})
-                .use("nodfix",xA,yA).label("A","w")
-                .use("nod",xB,yB).label("B","e")
-                .use("nod",xC,yC).label("C","w")
-                .use("nod",xD,xD).label("D","ne")
-                .use("nodflt",xE,yE,-Math.PI/2).label("E","e")
-                .style({ls:"#999",lw:1})
-                .dim(xA,275,xD,275).label("b")
-                .dim(xD,275,xB,275).label("b")
-                .dim(275,yE,275,yD).label("b")
-                .dim(275,yD,275,yA).label("b")
+                .cartesian()
+                .pan(10,10)
+                .style({foz:12,fof:"cursive",foc:"green"})
+                .bar2(A,B).label("1")
+                .bar2(A,C).label("2")
+                .bar2(A,D).label("3")
+                .bar2(B,D).label("4")
+                .bar2(C,D).label("5")
+                .bar2(C,E).label("6")
+                .bar2(D,E).label("7")
+                .style({foc:"@nodcolor"})
+                .vec(B,{dx:0,dy:-50},{lw:2,ls:"brown"}).label("F","end","left")
+                .vec(D,{dx:80,dy:0},{lw:2,ls:"brown"}).label("2F","end")
+                .use("nodfix",A).label("A","w")
+                .use("nod",B).label("B","se")
+                .use("nod",C).label("C","w")
+                .use("nod",D).label("D","ne")
+                .use("nodflt",{x:E.x,y:E.y,w:-Math.PI/2}).label("E","e")
+                .style({ls:"@dimcolor",foc:"@ls"})
+                .dim({x:A.x,y:275},{dx:100,dy:0}).label("b")
+                .dim({x:D.x,y:275},{dx:100,dy:0}).label("b")
+                .dim({x:275,y:E.y},{dx:0,dy:-100}).label("b")
+                .dim({x:275,y:D.y},{dx:0,dy:-100}).label("b")
                 .exe(ctx);
 
        ctx.canvas.addEventListener("mousemove", onmove, false);

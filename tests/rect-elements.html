@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>g2 - rect-element</title>
+    <style> canvas { border: 1px solid #000; background-color: #eee} </style>
+</head>
+
+<body>
+    <canvas id="c" width="120" height="100"></canvas>
+    <script src='../../g2/g2.js'></script>
+    <script src='../g2.mec.js'></script>
+    <script>
+       var ctx = document.getElementById("c").getContext("2d"),
+           rec = ctx.canvas.getBoundingClientRect(),
+           g = g2()
+                .clr()
+                .style({ls:"#666",ld:"@dot"})
+                .rec(25,25,70,50).label("c","c")
+                                 .label("s","s")
+                                 .label("se","se")
+                                 .label("e","e")
+                                 .label("ne","ne")
+                                 .label("n","n")
+                                 .label("nw","nw")
+                                 .label("w","w")
+                                 .label("sw","sw")
+                .exe(ctx);
+   </script>
+</body>
+</html>

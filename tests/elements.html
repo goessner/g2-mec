@@ -8,8 +8,8 @@
 
 <body>
     <h1>g2.mec - elements</h1>
-    <canvas id="c" width="520" height="100"></canvas>
-    <script src='../../g2/dist/g2.js'></script>
+    <canvas id="c" width="670" height="100"></canvas>
+    <script src='../../g2/g2.js'></script>
     <script src='../g2.mec.js'></script>
     <script>
        function onmove(e) {
@@ -41,16 +41,19 @@
                   .pan(10,10)
                   .clr()
 //                  .grid()
-                  .style({ls:"@nodcolor",fs:"orange",lw:2,foz:14,fof:"cursive",thal:"center",tval:"middle",lwnosc:true,labelOffset:10})
-                  .vec(10,50,50,50).txt("vec",30,12)
-                  .avec(80,20,35,120/180*pi,-60/180*pi).txt("avec",80,12)
-                  .dim(110,50,150,50,{pos:"in"}).txt("dim",130,12)
-                  .adim(180,20,35,120/180*pi,-60/180*pi,{pos:"in"}).txt("adim",180,12)
-                  .slider(230,50,0,40).txt("slider",230,12)
-                  .spring(260,50,300,50).txt("spring",280,12)
-                  .damper(310,50,350,50).txt("damper",330,12)
+                  .style({ls:"@nodcolor",fs:"orange",lw:1,foz:14,fof:"cursive",thal:"center",tval:"middle",lwnosc:true,labelOffset:10})
+                  .vec({x:10,y:50},{x:50,y:50}).txt("vec",30,12)
+                  .avec({x:80,y:20},35,120/180*pi,-60/180*pi).txt("avec",80,12)
+                  .dim({x:110,y:50},{x:150,y:50},{pos:"in"}).txt("dim",130,12)
+                  .adim({x:180,y:20},35,120/180*pi,-60/180*pi,{pos:"in"}).txt("adim",180,12)
+                  .slider({x:230,y:50},0).txt("slider",230,12)
+                  .spring({x:260,y:50},{x:300,y:50}).txt("spring",280,12)
+                  .damper({x:310,y:50},{x:350,y:50}).txt("damper",330,12)
                   .ground([360,40,390,40,390,60],false,{sign:-1}).txt("ground",380,12)
-                  .lin(420,50,480,50,{ld:"@dashdot"}).txt("center line",450,12)
+                  .bar({x:420,y:50},{dx:40,dy:0}).txt("bar",440,12)
+                  .bar2({x:480,y:50},{dx:40,dy:0}).txt("bar2",500,12)
+                  .link([550,50,570,65,580,50]).txt("link",565,12)
+                  .link2([600,50,620,65,630,50]).txt("link2",615,12)
                   .exe(ctx);
 
        ctx.canvas.addEventListener("mousemove", onmove, false);
