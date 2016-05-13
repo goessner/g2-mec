@@ -27,7 +27,8 @@ var g2 = g2 || { prototype:{} };  // for jsdoc only ...
  *                    1 : positive tangent direction
  * @example
  * g2().lin(10,10,100,10).mark("tick",[0,0.5,1],1)
- *     .arc(100,100,50,3.14).mark("sqr",1,['beg','end']);
+ *     .arc(100,100,50,3.14).mark("sqr",1,['beg','end']);<br>
+ * [Example](https://goessner.github.io/g2-mec/test/index.html#mark)
  * 
  */
 g2.prototype.mark = function mark(mrk,loc,dir) {

@@ -39,7 +39,7 @@ Draw markers on line element.
 
 **Example**  
 ```js
-g2().lin(10,10,100,10).mark("tick",[0,0.5,1],1)    .arc(100,100,50,3.14).mark("sqr",1,['beg','end']);
+g2().lin(10,10,100,10).mark("tick",[0,0.5,1],1)    .arc(100,100,50,3.14).mark("sqr",1,['beg','end']);<br>[Example](https://goessner.github.io/g2-mec/test/index.html#mark)
 ```
 <a name="g2+label"></a>
 ### g2.label(str, [loc], off) ⇒ <code>object</code>

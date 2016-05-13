@@ -48,8 +48,5 @@ window.onload = function() {
       g = eval(tests[i].src);
       g.exe(cell[2].firstChild.getContext("2d"));
       g.exe(cell[3]);
-//      g.exe(out);
-//      cell[4].innerHTML = out.svg.replace(/</g,"&lt;");    // unfortunately text overflows excessively ...
-//      console.log(out.svg);
    }
 }

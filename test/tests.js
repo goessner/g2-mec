@@ -20,7 +20,7 @@ var tests = [
  .use("pol",{x:175,y:75})
  .use("gnd",{x:175,y:25})`
 },
-{ title: "scaled\nnode\nsymbols",
+{ title: "node\nsymbols\nscaled",
   src: `g2()
  .cartesian()
  .use("nod",{x:25,y:85,scl:1.5})
@@ -32,7 +32,7 @@ var tests = [
  .use("pol",{x:175,y:85,scl:1.5})
  .use("gnd",{x:175,y:35,scl:1.5})`
 },
-{ title: "bars",
+{ title: "bar",
   src: `g2()
  .cartesian()
  .bar({x:25,y:15},{x:125,y:30})
@@ -40,7 +40,7 @@ var tests = [
  .bar({x:50,y:85},{r:100,w:-pi/12})
  .bar2({x:140,y:10},{r:100,w:pi/3})`
 },
-{ title: "links",
+{ title: "link",
   src: `g2()
  .cartesian()
  .link([20,60,40,95,60,70])
@@ -49,7 +49,7 @@ var tests = [
  .link2([120,20,140,55,160,30],true)
  `
 },
-{ title: "arrows",
+{ title: "vec",
   src: `g2()
  .cartesian()
  .vec({x:20,y:20},{x:100,y:60})
@@ -68,9 +68,8 @@ var tests = [
  .damper({x:50,y:80},{dx:80,dy:0})
  .ground([100,20,180,20,180,80])`
 },
-{ title: "rect\nlabels\ncartesian",
+{ title: "label",
   src: `g2()
- .cartesian()
  .rec(50,30,100,40).label("c")
                    .label("s","s")
                    .label("se","se")
@@ -81,8 +80,9 @@ var tests = [
                    .label("w","w")
                    .label("sw","sw")`
 },
-{ title: "rect\nlabels",
+{ title: "rect\nlabels\ncartesian",
   src: `g2()
+ .cartesian()
  .rec(50,30,100,40).label("c")
                    .label("s","s")
                    .label("se","se")
@@ -203,7 +203,7 @@ var tests = [
  .adim({x:50,y:80},20,pi/6,pi/3,{pos:"out"})
     .label("@angle","c")`
 },
-{ title: "line\nmarkers",
+{ title: "mark",
   src: `g2()
  .cartesian()
  .lin(20,20,150,20,{ls:"red"})
