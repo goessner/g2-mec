@@ -1,5 +1,5 @@
 /**
- * g2 (c) 2013-16 Stefan Goessner
+ * g2.mec (c) 2013-16 Stefan Goessner
  * @file mechanical extensions to `g2`.
  * @author Stefan Goessner
  * @license MIT License
@@ -329,14 +329,38 @@ g2.prototype.link2 = function link2(pts,mode,style) {
                .ply(pts,mode,{ls:"@nodfill",lw:2,lc:"round",lj:"round",fs:"transparent"})
                .proxy(g2.prototype.ply,[pts]);
 }
-
+/**
+ * Draw polygonial beam.
+ * @method
+ * @returns {object} this
+ * @param {array} pts Array of points.
+ * @param {bool|'split'} [mode = false] true:closed<br> false:non-closed<br> 'split':intermittend lines.
+ * @param {object} [style] Style object.
+ */
+g2.prototype.beam = function link(pts,mode) {
+   return this.ply(pts,mode,{fs:"transparent",ls:"@linkcolor",lw:5,lc:"butt",lj:"round"})
+              .proxy(g2.prototype.ply,[pts]);
+}
+/**
+ * Draw alternate glossy polygonial beam.
+ * @method
+ * @returns {object} this
+ * @param {array} pts Array of points.
+ * @param {bool|'split'} [mode = false] true:closed, false:non-closed, 'split:intermittend lines.
+ * @param {object} [style] Style object.
+ */
+g2.prototype.beam2 = function link2(pts,mode,style) {
+    return this.ply(pts,mode,{ls:"@nodcolor",lw:7,lc:"butt",lj:"round",fs:"transparent"})
+               .ply(pts,mode,{ls:"@nodfill2",lw:4.5,lc:"butt",lj:"round",fs:"transparent"})
+               .ply(pts,mode,{ls:"@nodfill",lw:2,lc:"butt",lj:"round",fs:"transparent"})
+               .proxy(g2.prototype.ply,[pts]);
+}
 /**
  * Draw bar.
  * @method
  * @returns {object} this
  * @param {v2} [p={x:0,y:0}] Start point.
  * @param {v2} [r={dx:10,dy:0}] Bar vector in absolute {x,y}, relative {dx,dy} or polar {r,w} coordinates.
- * @param {object} [style] Style object.
  */
 g2.prototype.bar = function bar(p,r) {
    var x1 = p && p.x || 0, x2 = typeof r === "object" ? ("x" in r ? r.x : "dx" in r ? (x1 + r.dx) : "r" in r ? (x1 + r.r*Math.cos(r.w||0)) : 0) : (x1+10),
@@ -351,7 +375,6 @@ g2.prototype.bar = function bar(p,r) {
  * @returns {object} this
  * @param {v2} [p={x:0,y:0}] Start point.
  * @param {v2} [r={dx:10,dy:0}] Bar end point in absolute {x,y} or vector in relative {dx,dy} or polar {r,w} coordinates.
- * @param {object} [style] Style object.
  */
 g2.prototype.bar2 = function bar2(p,r) {
    var x1 = p && p.x || 0, x2 = typeof r === "object" ? ("x" in r ? r.x : "dx" in r ? (x1 + r.dx) : "r" in r ? (x1 + r.r*Math.cos(r.w||0)) : 0) : (x1+10),
@@ -362,6 +385,72 @@ g2.prototype.bar2 = function bar2(p,r) {
               .proxy(g2.prototype.lin,[x1,y1,x2,y2]);
 }
 
+/**
+ * Draw pulley.
+ * @method
+ * @returns {object} this
+ * @param {v2} [p={x:0,y:0}] Center point.
+ * @param {float} [r=20] Radius.
+ */
+g2.prototype.pulley = function pulley(p,r) {
+   r = r || 25;
+   return this.cir(p.x,p.y,r,{ls:"@nodcolor",fs:"#e6e6e6",lw:1})
+              .cir(p.x,p.y,r-5,{ls:"@nodcolor",fs:"#e6e6e6",lw:1})
+              .cir(p.x,p.y,r-6,{ls:"#8e8e8e",fs:"transparent",lw:2})
+              .cir(p.x,p.y,r-8,{ls:"#aeaeae",fs:"transparent",lw:2})
+              .cir(p.x,p.y,r-10,{ls:"#cecece",fs:"transparent",lw:2})
+              .proxy(g2.prototype.cir,[p.x,p.y,r]);
+}
+/**
+ * Draw alternate pulley.
+ * @method
+ * @returns {object} this
+ * @param {object} [pos={x:0,y:0,w:0}] Center point position and rotation angle.
+ * @param {float} [r=20] Radius.
+ */
+g2.prototype.pulley2 = function pulley2(pos,r) {
+   r = r || 25;
+   return this.beg(pos)
+                .bar2({x:0,y:r-4},{x:0,y:-r+4})
+                .bar2({x:r-4,y:0},{x:-r+4,y:0})
+                .cir(0,0,r-2.5,{ls:"#e6e6e6",fs:"transparent",lw:5})
+                .cir(0,0,r,{ls:"@nodcolor",fs:"transparent",lw:1})
+                .cir(0,0,r-5,{ls:"@nodcolor",fs:"transparent",lw:1})
+              .end()
+              .proxy(g2.prototype.cir,[pos.x,pos.y,r]);
+}
+/**
+ * Draw rope. Amount of pulley radii must be greater than 10 units. They are forced to zero otherwise.
+ * @method
+ * @returns {object} this
+ * @param {v2} [p1={x:0,y:0}] Start pulley center.
+ * @param {float} [r1=20] Start pulley radius. With positive radius the rope leaves the 
+ *                        pulley in counterclockwise direction. Negative radius 
+ *                        forces the rope to leave in clockwise direction (cartesian rule).
+ * @param {v2} [p2={x:0,y:0}] End pulley center.
+ * @param {float} [r2=20] End pulley radius. With positive radius the rope leaves the 
+ *                        pulley in counterclockwise direction. Negative radius 
+ *                        forces the rope to leave in clockwise direction (cartesian rule).
+ */
+g2.prototype.rope = function rope(p1,r1,p2,r2) {
+   var Rmin = 10,
+       R1 = r1 >  Rmin ? r1 - 2.5 
+          : r1 < -Rmin ? r1 + 2.5
+          : 0,
+       R2 = r2 >  Rmin ? r2 - 2.5 
+          : r2 < -Rmin ? r2 + 2.5
+          : 0,
+       dx = p2.x-p1.x, dy = p2.y-p1.y, dd = dx*dx + dy*dy,
+       R12 = R1+R2, l = Math.sqrt(dd - R12*R12),
+       cpsi = (R12*dx + l*dy)/dd,
+       spsi = (R12*dy - l*dx)/dd,
+       x1 = p1.x + cpsi*R1,
+       y1 = p1.y + spsi*R1,
+       x2 = p2.x - cpsi*R2,
+       y2 = p2.y - spsi*R2;
+   return this.lin(x1,y1,x2,y2,{ls:"#888",lw:5})
+              .proxy(g2.prototype.lin,[x1,y1,x2,y2]);
+}
 /**
  * Polygon ground.
  * @method
@@ -472,7 +561,7 @@ g2.symbol.origin = function() {
                 .cir(0,0,z)
               .end();
 }();
-g2.symbol.nod =    g2().cir(0,0,6,{ls:"@nodcolor",fs:"@nodfill",lwnosc:true});
+g2.symbol.nod =    g2().cir(0,0,5,{ls:"@nodcolor",fs:"@nodfill",lwnosc:true});
 g2.symbol.dblnod = g2().cir(0,0,6,{ls:"@nodcolor",fs:"@nodfill"}).cir(0,0,3,{ls:"@nodcolor",fs:"@nodfill2"});
 g2.symbol.nodfix = g2().style({ls:"@nodcolor",fs:"@nodfill",lwnosc:true})
                        .p()
@@ -480,7 +569,7 @@ g2.symbol.nodfix = g2().style({ls:"@nodcolor",fs:"@nodfill",lwnosc:true})
                          .l(0,0)
                          .l(8,-12)
                        .drw({fs:"@nodfill2"})
-                       .cir(0,0,6);
+                       .cir(0,0,5);
 g2.symbol.dblnodfix = g2().p()
                          .m(-8,-12)
                          .l(0,0)
@@ -495,7 +584,7 @@ g2.symbol.nodflt = g2().style({ls:"@nodcolor",fs:"@nodfill",lwnosc:true})
                          .l(8,-12)
                          .z()
                        .drw({fs:"@nodfill2"})
-                       .cir(0,0,6,{fs:"@nodfill"})
+                       .cir(0,0,5,{fs:"@nodfill"})
                        .lin(-9,-19,9,-19,{ls:"@nodfill2",lw:5,lwnosc:false})
                        .lin(-9,-15.5,9,-15.5,{ls:"@nodcolor",lw:2,lwnosc:false});
 g2.symbol.dblnodflt = g2().style({ls:"@nodcolor",fs:"@nodfill2",lwnosc:true})
@@ -513,6 +602,33 @@ g2.symbol.gnd =    g2().cir(0,0,6,{ls:"@nodcolor",fs:"@nodfill",lwnosc:true})
                        .p().m(0,6).a(-Math.PI/2,6,0).l(-6,0).a(Math.PI/2,0,-6).z().fill({fs:"@nodcolor"});
 g2.symbol.pol =    g2().cir(0,0,6,{ls:"@nodcolor",fs:"@nodfill",lwnosc:true})
                        .cir(0,0,2.5,{ls:"@nodcolor",fs:"@nodcolor"});
+g2.symbol.ifo2pos = g2().style({ls:"@nodcolor",lc:"round",fs:"@ls"})
+                        .p().m(0,5).a(-Math.PI/2,0,0).a(Math.PI/2,0,-5)
+                            .m(12,-12).a(Math.PI/2,12,12).stroke()
+                        .p().m(6,12).l(6,-4).m(6,-12).l(8,-4).a(-Math.PI/3,4,-4).z()
+                            .m(12,12).l(14,5).a(-Math.PI/3,17,7).z()
+                        .drw();
+g2.symbol.ifo2neg = g2().style({ls:"@nodcolor",lc:"round",fs:"@ls"})
+                         .p().m(0,5).a(Math.PI/2,0,0).a(-Math.PI/2,0,-5)
+                             .m(-12,-12).a(-Math.PI/2,-12,12).stroke()
+                         .p().m(-6,-12).l(-6,4).m(-6,12).l(-8,4).a(Math.PI/3,-4,4).z()
+                             .m(-12,12).l(-14,5).a(Math.PI/3,-17,7).z()
+                        .drw();
+g2.symbol.ifo3pos = g2().style({ls:"@nodcolor",lc:"round",fs:"@ls"})
+                        .p().m(0,5).a(-Math.PI/2,0,0).a(Math.PI/2,0,-5)
+                            .m(12,-12).a(Math.PI/2,12,12).stroke()
+                        .p().m(6,12).l(6,-4).m(6,-12).l(8,-4).a(-Math.PI/3,4,-4).z()
+                            .m(12,12).l(14,5).a(-Math.PI/3,17,7).z()
+                            .m(8,0).l(20,0).m(28,0).l(20,-2).a(Math.PI/3,20,2).z()
+                        .drw();
+g2.symbol.ifo3neg = g2().style({ls:"@nodcolor",lc:"round",fs:"@ls"})
+                        .p().m(0,5).a(Math.PI/2,0,0).a(-Math.PI/2,0,-5)
+                            .m(-12,-12).a(-Math.PI/2,-12,12).stroke()
+                        .p().m(-6,-12).l(-6,4).m(-6,12).l(-8,4).a(Math.PI/3,-4,4).z()
+                            .m(-12,12).l(-14,5).a(Math.PI/3,-17,7).z()
+                            .m(-8,0).l(-20,0).m(-28,0).l(-20,-2).a(-Math.PI/3,-20,2).z()
+                        .drw();
+                       
 g2.symbol.dot = g2().cir(0,0,2,{fs:"@ls"});
 g2.symbol.sqr = g2().rec(-2,-2,4,4,{fs:"@ls"});
 g2.symbol.tilde = g2().p().m(0,4).a(Math.PI/2,0,0).a(-Math.PI/2,0,-4).stroke({lc:"round"});

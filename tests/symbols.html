@@ -8,14 +8,14 @@
 
 <body>
     <h1>g2 - symbols</h1>
-    <div id="svg" data-width="630", data-height="101"></div>
-    <canvas id="c" width="630" height="100"></canvas>
+    <div id="svg" data-width="680", data-height="101"></div>
+    <canvas id="c" width="830" height="100"></canvas>
     <script src='../../g2/g2.js'></script>
     <script src='../g2.mec.js'></script>
     <script>
        var ctx = document.getElementById("c").getContext("2d"),
            rec = ctx.canvas.getBoundingClientRect(),
-           x  = 0, y = 55, dx = 65, dy = 25,
+           x  = 0, y = 55, dx = 60, dy = 25,
            g = g2()
                 .clr()
                 .cartesian()
@@ -29,6 +29,10 @@
                 .use("dblnodflt",{x:x+=dx,y:y}).label("dblnodflt","s",dy)
                 .use("pol",{x:x+=dx,y:y}).label("pol","s",dy)
                 .use("gnd",{x:x+=dx,y:y}).label("gnd","s",dy)
+                .use("ifo2neg",{x:x+=dx,y:y}).label("ifo2neg","s",dy)
+                .use("ifo2pos",{x:x+=dx,y:y}).label("ifo2pos","s",dy)
+                .use("ifo3neg",{x:x+=dx,y:y}).label("ifo3neg","s",dy)
+                .use("ifo3pos",{x:x+=dx,y:y}).label("ifo3pos","s",dy)
                 .exe(ctx)
 //       .exe(document.getElementById("svg"));
 //       .exe("svg")

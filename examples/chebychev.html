@@ -10,8 +10,8 @@
     <h1>g2 - Chebychev</h1>
     <canvas id="c" width="601" height="401"></canvas>
     <script src='../../v2/v2.js'></script>
-    <script src='../../g2/dist/g2.js'></script>
-    <script src='../src/g2.mec.js'></script>
+    <script src='../../g2/g2.js'></script>
+    <script src='../g2.mec.js'></script>
     <script>
        var Mec = {
           create: function() { var o = Object.create(this.prototype); o.constructor.apply(o,arguments); return o; },
@@ -121,7 +121,6 @@
             .use(gmec)
             .cpy(mc.renderStatic(world));
 
-//       render(0);
        render();
    </script>
 </body>

@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>g2 - symbols</title>
+    <style> canvas { border: 1px solid #000; } </style>
+</head>
+
+<body>
+    <h1>g2 - ifm-symbols</h1>
+    <canvas id="c" width="680" height="100"></canvas>
+    <script src='../../g2/g2.js'></script>
+    <script src='../g2.mec.js'></script>
+    <script>
+       var ctx = document.getElementById("c").getContext("2d"),
+           x  = 0, y = 55, dx = 65, dy = 25,
+           g = g2()
+                .clr()
+                .cartesian()
+                .pan(20,50)
+                .style({lw:1,foz:14,fof:"cursive",thal:"center",tval:"middle",labelOffset:20})
+                .p().m(0,4).a(-Math.PI/2,0,0).a(Math.PI/2,0,-4)
+                             .m(12,-12).a(Math.PI/2,12,12).stroke()
+                         .p().m(6,12).l(6,-4).m(6,-12).l(8,-4).a(-Math.PI/3,4,-4).z()
+                             .m(12,12).l(14,5).a(-Math.PI/3,17,7).z()
+                             .m(8,0).l(20,0).m(28,0).l(20,-2).a(Math.PI/3,20,2).z()
+                         .drw()
+                .exe(ctx)
+//       .exe(document.getElementById("svg"));
+//       .exe("svg")
+//       console.log(document.getElementById("svg").innerHTML);
+   </script>
+</body>
+</html>

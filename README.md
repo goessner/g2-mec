@@ -168,5 +168,39 @@ Linear elements provide parameterized numerical or named locations.
 | Polygonial elements | `ply, ground`<br>`link, link2` | `0.5` | `beg, mid, end`<br> `#index` <br> normalized numerical parameter |`-1,0,1` | ![polygonial markers](img/poly-markers.png)
 
 
-## API Reference
+# API Reference
 See the [API Reference](api/readme.md) for details.
+
+
+# License
+`g2.mec` is licensed under the terms of the MIT License.
+
+
+#Change Log
+
+
+## 0.4.0 - 2016-05-24
+
+### Added
+
+  `link, bar, pulley, rope` elements added.
+
+## 0.3.0 - 2016-05-13
+
+### Changed
+
+*    Fundamental changes also affecting the api.
+*    See documentation and API for details. @goessner.
+
+    
+## 0.2.3 - 2016-05-03
+
+### Changed
+
+    Transformation bug removed @goessner.
+
+## 0.2.0 - 2016-01-10
+
+### Added
+
+    CHANGELOG.md @goessner.

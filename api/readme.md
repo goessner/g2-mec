@@ -17,8 +17,13 @@ Mechanical extensions.
     * [.damper([p], [r], args)](#g2+damper) ⇒ <code>object</code>
     * [.link(pts, [mode], [style])](#g2+link) ⇒ <code>object</code>
     * [.link2(pts, [mode], [style])](#g2+link2) ⇒ <code>object</code>
-    * [.bar([p], [r], [style])](#g2+bar) ⇒ <code>object</code>
-    * [.bar2([p], [r], [style])](#g2+bar2) ⇒ <code>object</code>
+    * [.beam(pts, [mode], [style])](#g2+beam) ⇒ <code>object</code>
+    * [.beam2(pts, [mode], [style])](#g2+beam2) ⇒ <code>object</code>
+    * [.bar([p], [r])](#g2+bar) ⇒ <code>object</code>
+    * [.bar2([p], [r])](#g2+bar2) ⇒ <code>object</code>
+    * [.pulley([p], [r])](#g2+pulley) ⇒ <code>object</code>
+    * [.pulley2([pos], [r])](#g2+pulley2) ⇒ <code>object</code>
+    * [.rope([p1], [r1], [p2], [r2])](#g2+rope) ⇒ <code>object</code>
     * [.ground(pts, [closed], [args])](#g2+ground) ⇒ <code>object</code>
   * _static_
     * [.State](#g2.State) : <code>object</code>
@@ -180,8 +185,34 @@ Draw alternate glossy polygonial link.
 | [mode] | <code>bool</code> &#124; <code>&#x27;split&#x27;</code> | <code>false</code> | true:closed, false:non-closed, 'split:intermittend lines. |
 | [style] | <code>object</code> |  | Style object. |
 
+<a name="g2+beam"></a>
+### g2.beam(pts, [mode], [style]) ⇒ <code>object</code>
+Draw polygonial beam.
+
+**Kind**: instance method of <code>[g2](#g2)</code>  
+**Returns**: <code>object</code> - this  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| pts | <code>array</code> |  | Array of points. |
+| [mode] | <code>bool</code> &#124; <code>&#x27;split&#x27;</code> | <code>false</code> | true:closed<br> false:non-closed<br> 'split':intermittend lines. |
+| [style] | <code>object</code> |  | Style object. |
+
+<a name="g2+beam2"></a>
+### g2.beam2(pts, [mode], [style]) ⇒ <code>object</code>
+Draw alternate glossy polygonial beam.
+
+**Kind**: instance method of <code>[g2](#g2)</code>  
+**Returns**: <code>object</code> - this  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| pts | <code>array</code> |  | Array of points. |
+| [mode] | <code>bool</code> &#124; <code>&#x27;split&#x27;</code> | <code>false</code> | true:closed, false:non-closed, 'split:intermittend lines. |
+| [style] | <code>object</code> |  | Style object. |
+
 <a name="g2+bar"></a>
-### g2.bar([p], [r], [style]) ⇒ <code>object</code>
+### g2.bar([p], [r]) ⇒ <code>object</code>
 Draw bar.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
@@ -191,10 +222,9 @@ Draw bar.
 | --- | --- | --- | --- |
 | [p] | <code>v2</code> | <code>{x:0,y:0}</code> | Start point. |
 | [r] | <code>v2</code> | <code>{dx:10,dy:0}</code> | Bar vector in absolute {x,y}, relative {dx,dy} or polar {r,w} coordinates. |
-| [style] | <code>object</code> |  | Style object. |
 
 <a name="g2+bar2"></a>
-### g2.bar2([p], [r], [style]) ⇒ <code>object</code>
+### g2.bar2([p], [r]) ⇒ <code>object</code>
 Draw bar.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
@@ -204,7 +234,44 @@ Draw bar.
 | --- | --- | --- | --- |
 | [p] | <code>v2</code> | <code>{x:0,y:0}</code> | Start point. |
 | [r] | <code>v2</code> | <code>{dx:10,dy:0}</code> | Bar end point in absolute {x,y} or vector in relative {dx,dy} or polar {r,w} coordinates. |
-| [style] | <code>object</code> |  | Style object. |
+
+<a name="g2+pulley"></a>
+### g2.pulley([p], [r]) ⇒ <code>object</code>
+Draw pulley.
+
+**Kind**: instance method of <code>[g2](#g2)</code>  
+**Returns**: <code>object</code> - this  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [p] | <code>v2</code> | <code>{x:0,y:0}</code> | Center point. |
+| [r] | <code>float</code> | <code>20</code> | Radius. |
+
+<a name="g2+pulley2"></a>
+### g2.pulley2([pos], [r]) ⇒ <code>object</code>
+Draw alternate pulley.
+
+**Kind**: instance method of <code>[g2](#g2)</code>  
+**Returns**: <code>object</code> - this  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [pos] | <code>object</code> | <code>{x:0,y:0,w:0}</code> | Center point position and rotation angle. |
+| [r] | <code>float</code> | <code>20</code> | Radius. |
+
+<a name="g2+rope"></a>
+### g2.rope([p1], [r1], [p2], [r2]) ⇒ <code>object</code>
+Draw rope. Amount of pulley radii must be greater than 10 units. They are forced to zero otherwise.
+
+**Kind**: instance method of <code>[g2](#g2)</code>  
+**Returns**: <code>object</code> - this  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [p1] | <code>v2</code> | <code>{x:0,y:0}</code> | Start pulley center. |
+| [r1] | <code>float</code> | <code>20</code> | Start pulley radius. With positive radius the rope leaves the                         pulley in counterclockwise direction. Negative radius                         forces the rope to leave in clockwise direction (cartesian rule). |
+| [p2] | <code>v2</code> | <code>{x:0,y:0}</code> | End pulley center. |
+| [r2] | <code>float</code> | <code>20</code> | End pulley radius. With positive radius the rope leaves the                         pulley in counterclockwise direction. Negative radius                         forces the rope to leave in clockwise direction (cartesian rule). |
 
 <a name="g2+ground"></a>
 ### g2.ground(pts, [closed], [args]) ⇒ <code>object</code>

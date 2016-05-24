@@ -250,6 +250,115 @@ var tests = [
            .mark("arrowtick","beg", 1)
            .mark("arrowtick","end",-1)
 `
+},
+{ title: "beam\nmarkers",
+  src: `g2()
+ .cartesian()
+ .beam2([50,50,150,50])
+   .mark("ifo2neg","beg", 1)
+   .mark("ifo2pos","end", 1)
+`
+},
+{ title: "beam\nmarkers",
+  src: `g2()
+ .cartesian()
+ .beam2([50,75,150,75,150,50])
+   .mark("ifo3neg","beg", 1)
+   .mark("ifo3pos","end", 1)
+`
+},
+{ title: "pulley",
+  src: `g2()
+ .cartesian()
+ .pulley({x:50,y:50},20)
+ .use("nod",{x:50,y:50})
+ .pulley({x:125,y:50},30)
+ .use("nod",{x:125,y:50})
+`
+},
+{ title: "pulley2",
+  src: `g2()
+ .cartesian()
+ .pulley2({x:50,y:50},20)
+ .use("nod",{x:50,y:50})
+ .pulley2({x:125,y:50,w:pi/3},30)
+ .use("nod",{x:125,y:50})
+`
+},
+{ title: "rope",
+  src: `g2()
+ .cartesian()
+ .rope({x:50,y:50},20,{x:125,y:50,w:pi/3},0)
+ .pulley({x:50,y:50},20)
+ .use("nod",{x:50,y:50})
+ .use("nod",{x:125,y:50})
+`
+},
+{ title: "rope",
+  src: `g2()
+ .cartesian()
+ .rope({x:50,y:50},-20,{x:125,y:50,w:pi/3},0)
+ .pulley2({x:50,y:50},20)
+ .use("nod",{x:50,y:50})
+ .use("nod",{x:125,y:50})
+`
+},
+{ title: "rope",
+  src: `g2()
+ .rope({x:50,y:50},0,{x:125,y:50,w:pi/3},30)
+ .use("nod",{x:50,y:50})
+ .pulley({x:125,y:50,w:pi/3},30)
+ .use("nod",{x:125,y:50})
+`
+},
+{ title: "rope",
+  src: `g2()
+ .cartesian()
+ .rope({x:50,y:50},0,{x:125,y:50,w:pi/3},-30)
+ .use("nod",{x:50,y:50})
+ .pulley2({x:125,y:50,w:pi/3},30)
+ .use("nod",{x:125,y:50})
+`
+},
+{ title: "rope",
+  src: `g2()
+ .cartesian()
+ .rope({x:50,y:50},20,{x:125,y:50,w:pi/3},30)
+ .pulley({x:50,y:50},20)
+ .use("nod",{x:50,y:50})
+ .pulley({x:125,y:50,w:pi/3},30)
+ .use("nod",{x:125,y:50})
+`
+},
+{ title: "rope",
+  src: `g2()
+ .cartesian()
+ .rope({x:50,y:50},20,{x:125,y:50,w:pi/3},-30)
+ .pulley2({x:50,y:50},20)
+ .use("nod",{x:50,y:50})
+ .pulley2({x:125,y:50,w:pi/3},30)
+ .use("nod",{x:125,y:50})
+`
+},
+{ title: "rope",
+  src: `g2()
+ .cartesian()
+ .rope({x:50,y:50},-20,{x:125,y:50,w:pi/3},30)
+ .pulley({x:50,y:50},20)
+ .use("nod",{x:50,y:50})
+ .pulley({x:125,y:50,w:pi/3},30)
+ .use("nod",{x:125,y:50})
+`
+},
+{ title: "rope",
+  src: `g2()
+ .cartesian()
+ .rope({x:50,y:50},-20,{x:125,y:50,w:pi/3},-30)
+ .pulley2({x:50,y:50},20)
+ .use("nod",{x:50,y:50})
+ .pulley2({x:125,y:50,w:pi/3},30)
+ .use("nod",{x:125,y:50})
+`
 }
 ]
 

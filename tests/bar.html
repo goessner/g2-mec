@@ -10,38 +10,17 @@
     <h1>g2 - symbols</h1>
     <div id="svg" data-width="201", data-height="101"></div>
     <canvas id="c" width="201" height="101"></canvas>
-    <script src='../../g2/dist/g2.js'></script>
-    <script src='../src/g2.mec.js'></script>
+    <script src='../../g2/g2.js'></script>
+    <script src='../g2.mec.js'></script>
     <script>
-       var ctx = document.getElementById("c").getContext("2d"),
-           pi = Math.PI;
+       var ctx = document.getElementById("c").getContext("2d");
 
            g = g2().cartesian()
                    .style({sh:[5,5,5,"#666"]})
-                   .bar({x:20,y:10,dx:140,dy:70})
-                   .use("nod",{x:20,y:10})
-                   .use("nodfix",{x:120,y:20})
+                   .bar({x:20,y:30},{dx:100,dy:0})
+                   .use("nodfix",{x:20,y:30})
+                   .use("nodflt",{x:120,y:30})
                    .exe(ctx);
-/*
-       var x1 = 50, y1 = 20, x2 = 150, y2 = 80, len = Math.hypot(100,60),
-           dx = 100/len, dy = 60/len, b = 10;
-       var gradient = ctx.createLinearGradient(x1+dx*len/2+dy*b/2,y1+dy*len/2-dx*b/2,x1+dx*len/2-dy*b/2,y1+dy*len/2+dx*b/2);
-       gradient.addColorStop(0,"#666");
-       gradient.addColorStop(0.5,"#ccc");
-       gradient.addColorStop(1,"#666");
-       ctx.strokeStyle = gradient;
-       ctx.lineCap = "round";
-       ctx.shadowOffsetX = 10;
-       ctx.shadowOffsetY = 0;
-       ctx.shadowBlur = 5;
-       ctx.shadowColor = "#999";
-       ctx.lineWidth = b;
-       ctx.beginPath();
-       ctx.moveTo(x1,y1);
-       ctx.lineTo(x2,y2);
-       ctx.stroke();
-//       ctx.fillRect(0,0,200,100);
-*/
    </script>
 </body>
 </html>
