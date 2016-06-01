@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>g2 - ground-def</title>
+</head>
+
+<body>
+    <h1>g2 - ground-def</h1>
+    <canvas id="c" width="100" height="100"></canvas>
+    <script src='../../g2/g2.js'></script>
+    <script src='../g2.mec.js'></script>
+    <script>
+      var g = g2(), pi = Math.PI;
+         g.cartesian()
+          .ground([25,25,75,25,75,75])
+          .exe(document.getElementById("c").getContext("2d"));
+   </script>
+</body>
+</html>

@@ -41,8 +41,10 @@ g2.prototype.mark = function mark(mrk,loc,dir) {
          w = dir < 0 ? Math.atan2(-p.dy,-p.dx) // -Math.PI 
            : dir > 0 ? Math.atan2( p.dy, p.dx) 
            : 0;
-         this.use(mrk,{x:p.x,y:p.y,w:w,scl:1,
-                       ls:(cmd.style && cmd.style.ls || "@ls"),fs:"@ls"});
+//         console.log("lw="+(cmd.style && cmd.style.lw || 1))
+         this.use(mrk,{x:p.x,y:p.y,w:w,scl:(cmd.style && cmd.style.lw || "@lwOwner"),
+                       ls:(cmd.style && cmd.style.ls || "@ls"),
+                       fs:"@ls"});
       }
    }
    return this;
@@ -95,22 +97,13 @@ g2.prototype.label = function label(str,loc,off) {
 g2.prototype.vec = function vec(p,r,style) {
    var x1 = p && p.x || 0, x2 = typeof r === "object" ? ("x" in r ? r.x : "dx" in r ? (x1 + r.dx) : "r" in r ? (x1 + r.r*Math.cos(r.w||0)) : 0) : (x1+10),
        y1 = p && p.y || 0, y2 = typeof r === "object" ? ("y" in r ? r.y : "dy" in r ? (y1 + r.dy) : "r" in r ? (y1 + r.r*Math.sin(r.w||0)) : 0) : y1,
-       x, y, dx = x2-x1, dy = y2-y1, len = Math.hypot(dx,dy),
-       ux = len>0 ? dx/len : 0, uy = len>0 ? dy/len : 0,
-       sty = Object.assign({},style,{fs:"@ls",lc:"round",lj:"round"});
+       len = Math.hypot(x2-x1,y2-y1);
 
+   if (len > 0)
+      this.lin(x1,y1,x2,y2,style);
    if (len > 12)
-      this.p()
-            .m(x1,y1)
-            .l(x=x2,y=y2)
-            .m(x,y)
-            .l(x+=-12*ux-2.5*uy,y+=-12*uy+2.5*ux)
-            .a(-Math.PI/3,x+5*uy,y-5*ux)
-            .z()
-          .drw(sty);
-   else
-      this.lin(x1,y1,x2,y2,sty);
-   return this.proxy(g2.prototype.lin,[x1,y1,x2,y2]);
+      this.mark("arrow","end",1);
+   return this.proxy(g2.prototype.lin,[x1,y1,x2,y2,style]);
 };
 
 /**
@@ -170,7 +163,7 @@ g2.prototype.dim = function dim(p,r,args) {
                 .z()
                 .m(x2+3*uy,y2-3*ux).l(x2-3*uy,y2+3*ux).z()
               .drw(Object.assign({ls:"@dimcolor"},args,{fs:"@ls",lc:"round",lj:"round"}))
-              .proxy(g2.prototype.lin,[x1,y1,x2,y2]);
+              .proxy(g2.prototype.lin,[x1,y1,x2,y2,args]);
 };
 
 /**
@@ -219,7 +212,7 @@ g2.prototype.adim = function adim(p,r,w,dw,args) {
  * Draw slider.
  * @method
  * @returns {object} g2
- * @param {object} [p={x:0,y:0}] Center point.
+ * @param {object} [p={x:0,y:0,w:0}] Center point.
  * @param {angle} w Rotation angle [rad]
  * @param {object} args Arguments object holding style properties. See 'g2.prototype.style' for details.
  * @param {float} [args.b=32] Slider breadth.
@@ -307,11 +300,11 @@ g2.prototype.damper = function(p,r,args) {
  * @method
  * @returns {object} this
  * @param {array} pts Array of points.
- * @param {bool|'split'} [mode = false] true:closed<br> false:non-closed<br> 'split':intermittend lines.
+ * @param {bool} [closed = false] true:closed<br> false:non-closed.
  * @param {object} [style] Style object.
  */
-g2.prototype.link = function link(pts,mode) {
-   return this.ply(pts,mode,{fs:(mode===true?"@linkfill":"transparent"),ls:"@linkcolor",lw:5,lc:"round",lj:"round"})
+g2.prototype.link = function link(pts,closed,style) {
+   return this.ply(pts,closed,Object.assign({fs:(closed===true?"@linkfill":"transparent"),ls:"@linkcolor",lw:5,lc:"round",lj:"round"},style))
               .proxy(g2.prototype.ply,[pts]);
 }
 /**
@@ -319,14 +312,13 @@ g2.prototype.link = function link(pts,mode) {
  * @method
  * @returns {object} this
  * @param {array} pts Array of points.
- * @param {bool|'split'} [mode = false] true:closed, false:non-closed, 'split:intermittend lines.
- * @param {object} [style] Style object.
+ * @param {bool} [closed = false] true:closed<br> false:non-closed.
  */
-g2.prototype.link2 = function link2(pts,mode,style) {
-    return this.cpy(mode===true ? this.ply(pts,mode,{ls:"transparent",fs:"@linkfill",lw:7,lc:"round",lj:"round"}) : this)
-               .ply(pts,mode,{ls:"@nodcolor",lw:7,lc:"round",lj:"round",fs:"transparent"})
-               .ply(pts,mode,{ls:"@nodfill2",lw:4.5,lc:"round",lj:"round",fs:"transparent"})
-               .ply(pts,mode,{ls:"@nodfill",lw:2,lc:"round",lj:"round",fs:"transparent"})
+g2.prototype.link2 = function link2(pts,closed) {
+    return this.cpy(closed===true ? this.ply(pts,closed,{ls:"transparent",fs:"@linkfill",lw:7,lc:"round",lj:"round"}) : this)
+               .ply(pts,closed,{ls:"@nodcolor",lw:7,lc:"round",lj:"round",fs:"transparent"})
+               .ply(pts,closed,{ls:"@nodfill2",lw:4.5,lc:"round",lj:"round",fs:"transparent"})
+               .ply(pts,closed,{ls:"@nodfill",lw:2,lc:"round",lj:"round",fs:"transparent"})
                .proxy(g2.prototype.ply,[pts]);
 }
 /**
@@ -334,26 +326,22 @@ g2.prototype.link2 = function link2(pts,mode,style) {
  * @method
  * @returns {object} this
  * @param {array} pts Array of points.
- * @param {bool|'split'} [mode = false] true:closed<br> false:non-closed<br> 'split':intermittend lines.
- * @param {object} [style] Style object.
  */
-g2.prototype.beam = function link(pts,mode) {
-   return this.ply(pts,mode,{fs:"transparent",ls:"@linkcolor",lw:5,lc:"butt",lj:"round"})
-              .proxy(g2.prototype.ply,[pts]);
+g2.prototype.beam = function beam(pts) {
+   return this.ply(pts,false,{fs:"transparent",ls:"@linkcolor",lw:5,lc:"butt",lj:"round"})
+              .proxy(g2.prototype.ply,[pts,false,null,{lw:2}]);
 }
 /**
  * Draw alternate glossy polygonial beam.
  * @method
  * @returns {object} this
  * @param {array} pts Array of points.
- * @param {bool|'split'} [mode = false] true:closed, false:non-closed, 'split:intermittend lines.
- * @param {object} [style] Style object.
  */
-g2.prototype.beam2 = function link2(pts,mode,style) {
-    return this.ply(pts,mode,{ls:"@nodcolor",lw:7,lc:"butt",lj:"round",fs:"transparent"})
-               .ply(pts,mode,{ls:"@nodfill2",lw:4.5,lc:"butt",lj:"round",fs:"transparent"})
-               .ply(pts,mode,{ls:"@nodfill",lw:2,lc:"butt",lj:"round",fs:"transparent"})
-               .proxy(g2.prototype.ply,[pts]);
+g2.prototype.beam2 = function beam2(pts) {
+    return this.ply(pts,false,{ls:"@nodcolor",lw:7,lc:"butt",lj:"round",fs:"transparent"})
+               .ply(pts,false,{ls:"@nodfill2",lw:4.5,lc:"butt",lj:"round",fs:"transparent"})
+               .ply(pts,false,{ls:"@nodfill",lw:2,lc:"butt",lj:"round",fs:"transparent"})
+               .proxy(g2.prototype.ply,[pts,false,null,{lw:2}]);
 }
 /**
  * Draw bar.
@@ -361,11 +349,12 @@ g2.prototype.beam2 = function link2(pts,mode,style) {
  * @returns {object} this
  * @param {v2} [p={x:0,y:0}] Start point.
  * @param {v2} [r={dx:10,dy:0}] Bar vector in absolute {x,y}, relative {dx,dy} or polar {r,w} coordinates.
+ * @param {object} [style] Style object.
  */
-g2.prototype.bar = function bar(p,r) {
+g2.prototype.bar = function bar(p,r,style) {
    var x1 = p && p.x || 0, x2 = typeof r === "object" ? ("x" in r ? r.x : "dx" in r ? (x1 + r.dx) : "r" in r ? (x1 + r.r*Math.cos(r.w||0)) : 0) : (x1+10),
        y1 = p && p.y || 0, y2 = typeof r === "object" ? ("y" in r ? r.y : "dy" in r ? (y1 + r.dy) : "r" in r ? (y1 + r.r*Math.sin(r.w||0)) : 0) : y1;
-   return this.lin(x1,y1,x2,y2,{ls:"@linkcolor",lw:6,lc:"round"})
+   return this.lin(x1,y1,x2,y2,Object.assign({ls:"@linkcolor",lw:6,lc:"round"},style))
               .proxy(g2.prototype.lin,[x1,y1,x2,y2]);
 }
 
@@ -390,7 +379,7 @@ g2.prototype.bar2 = function bar2(p,r) {
  * @method
  * @returns {object} this
  * @param {v2} [p={x:0,y:0}] Center point.
- * @param {float} [r=20] Radius.
+ * @param {float} [r=25] Radius.
  */
 g2.prototype.pulley = function pulley(p,r) {
    r = r || 25;
@@ -406,7 +395,7 @@ g2.prototype.pulley = function pulley(p,r) {
  * @method
  * @returns {object} this
  * @param {object} [pos={x:0,y:0,w:0}] Center point position and rotation angle.
- * @param {float} [r=20] Radius.
+ * @param {float} [r=25] Radius.
  */
 g2.prototype.pulley2 = function pulley2(pos,r) {
    r = r || 25;
@@ -432,7 +421,7 @@ g2.prototype.pulley2 = function pulley2(pos,r) {
  *                        pulley in counterclockwise direction. Negative radius 
  *                        forces the rope to leave in clockwise direction (cartesian rule).
  */
-g2.prototype.rope = function rope(p1,r1,p2,r2) {
+g2.prototype.rope = function rope(p1,r1,p2,r2,style) {
    var Rmin = 10,
        R1 = r1 >  Rmin ? r1 - 2.5 
           : r1 < -Rmin ? r1 + 2.5
@@ -448,7 +437,7 @@ g2.prototype.rope = function rope(p1,r1,p2,r2) {
        y1 = p1.y + spsi*R1,
        x2 = p2.x - cpsi*R2,
        y2 = p2.y - spsi*R2;
-   return this.lin(x1,y1,x2,y2,{ls:"#888",lw:5})
+   return this.lin(x1,y1,x2,y2,Object.assign({ls:"#888",lw:4},style))
               .proxy(g2.prototype.lin,[x1,y1,x2,y2]);
 }
 /**
@@ -492,11 +481,61 @@ g2.prototype.ground = function ground(pts,closed,args) {
       eq[0] = {x:p0.x-sign*(h+1)*e0.y, y:p0.y+sign*(h+1)*e0.x};
       eq.push({x:p.x -sign*(h+1)*ep.y, y:p.y +sign*(h+1)*ep.x});
    }
-   return this.beg(Object.assign({x:-0.5,y:-0.5,ls:"@linkcolor",fs:"transparent",lw:2},args,{fs:"transparent",lc:"butt",lj:"miter"}))
-                 .ply(pts,closed,args)
+   return this.beg(Object.assign({x:-0.5,y:-0.5,ls:"@linkcolor",lw:2},args,{fs:"transparent",lc:"butt",lj:"miter"}))
                  .ply(eq,closed,{ls:"@nodfill2",lw:2*h})
+                 .ply(pts,closed,args)
               .end()
 };
+
+/**
+ * Polygonial line load. The first and last point define the base line onto which
+ * the load is acting orthogonal.
+ * @method
+ * @returns {object} this
+ * @param {array} pts Array of load contour points.
+ * @param {real} spacing Spacing of the vectors drawn as a positive real number, interprete as<br>
+ *                       * spacing &lt; 1: spacing = 1/m with a partition of m.<br>
+ *                       * spacing &gt; 1: length of spacing.
+ * @param {object} [style] Arguments object.
+ */
+g2.prototype.load = function load(pts,spacing,style) {
+   function iterator(p,dlambda) {
+      var ux = pn.x - p0.x, uy = pn.y - p0.y, uu = ux*ux + uy*uy,
+          lam = [], dlam, lambda = -dlambda;
+
+      for (var i = 0; i < n; i++)  // build array of projection parameters of polypoints onto base line.
+         lam[i] = ((pitr(p,i).x - p0.x)*ux + (pitr(p,i).y - p0.y)*uy)/uu;
+
+      return {
+         next: function() {
+            lambda += dlambda;
+            for (var i = 0; i < n; i++) {
+               dlam = lam[i+1] - lam[i];
+               if (dlam > 0 && lam[i] <= lambda && lambda <= lam[i+1]) {
+                  var mu = (lambda - lam[i])/dlam;
+                  return {
+                     value: {
+                        p1: {x:p0.x + lambda*ux,y:p0.y + lambda*uy},
+                        p2: {x:pitr(p,i).x + mu*(pitr(p,i+1).x-pitr(p,i).x),y:pitr(p,i).y + mu*(pitr(p,i+1).y-pitr(p,i).y)}
+                     }
+                  }
+               }
+            }
+            return { done: true };
+         }
+      };
+   }
+
+   var pitr = g2.prototype.ply.itrOf(pts), n = pitr(pts).count, p0 = pitr(pts,0), pn = pitr(pts,n-1),
+       dlambda = spacing < 1 ? spacing : spacing/Math.hypot(pn.x-p0.x,pn.y-p0.y),
+       itr = iterator(pts,dlambda), val;
+   this.ply(pts,false,Object.assign({fs:"@linkfill"},style,{ls:"transparent"}));
+
+   while (!(val = itr.next()).done)
+      this.vec(val.value.p2,val.value.p1);
+
+   return this;
+}
 
 /**
  * Mechanical style values.
@@ -561,16 +600,17 @@ g2.symbol.origin = function() {
                 .cir(0,0,z)
               .end();
 }();
-g2.symbol.nod =    g2().cir(0,0,5,{ls:"@nodcolor",fs:"@nodfill",lwnosc:true});
-g2.symbol.dblnod = g2().cir(0,0,6,{ls:"@nodcolor",fs:"@nodfill"}).cir(0,0,3,{ls:"@nodcolor",fs:"@nodfill2"});
+g2.symbol.nod =    g2().cir(0,0,4,{ls:"@nodcolor",fs:"@nodfill",lwnosc:true});
+g2.symbol.dblnod = g2().cir(0,0,6,{ls:"@nodcolor",fs:"@nodfill"}).cir(0,0,3,{ls:"@nodcolor",fs:"@nodfill2",lwnosc:true});
 g2.symbol.nodfix = g2().style({ls:"@nodcolor",fs:"@nodfill",lwnosc:true})
                        .p()
                          .m(-8,-12)
                          .l(0,0)
                          .l(8,-12)
                        .drw({fs:"@nodfill2"})
-                       .cir(0,0,5);
-g2.symbol.dblnodfix = g2().p()
+                       .cir(0,0,4);
+g2.symbol.dblnodfix = g2().style({ls:"@nodcolor",fs:"@nodfill",lwnosc:true})
+                         .p()
                          .m(-8,-12)
                          .l(0,0)
                          .l(8,-12)
@@ -584,7 +624,7 @@ g2.symbol.nodflt = g2().style({ls:"@nodcolor",fs:"@nodfill",lwnosc:true})
                          .l(8,-12)
                          .z()
                        .drw({fs:"@nodfill2"})
-                       .cir(0,0,5,{fs:"@nodfill"})
+                       .cir(0,0,4,{fs:"@nodfill"})
                        .lin(-9,-19,9,-19,{ls:"@nodfill2",lw:5,lwnosc:false})
                        .lin(-9,-15.5,9,-15.5,{ls:"@nodcolor",lw:2,lwnosc:false});
 g2.symbol.dblnodflt = g2().style({ls:"@nodcolor",fs:"@nodfill2",lwnosc:true})
@@ -602,39 +642,39 @@ g2.symbol.gnd =    g2().cir(0,0,6,{ls:"@nodcolor",fs:"@nodfill",lwnosc:true})
                        .p().m(0,6).a(-Math.PI/2,6,0).l(-6,0).a(Math.PI/2,0,-6).z().fill({fs:"@nodcolor"});
 g2.symbol.pol =    g2().cir(0,0,6,{ls:"@nodcolor",fs:"@nodfill",lwnosc:true})
                        .cir(0,0,2.5,{ls:"@nodcolor",fs:"@nodcolor"});
-g2.symbol.ifo2pos = g2().style({ls:"@nodcolor",lc:"round",fs:"@ls"})
-                        .p().m(0,5).a(-Math.PI/2,0,0).a(Math.PI/2,0,-5)
-                            .m(12,-12).a(Math.PI/2,12,12).stroke()
-                        .p().m(6,12).l(6,-4).m(6,-12).l(8,-4).a(-Math.PI/3,4,-4).z()
-                            .m(12,12).l(14,5).a(-Math.PI/3,17,7).z()
-                        .drw();
-g2.symbol.ifo2neg = g2().style({ls:"@nodcolor",lc:"round",fs:"@ls"})
-                         .p().m(0,5).a(Math.PI/2,0,0).a(-Math.PI/2,0,-5)
-                             .m(-12,-12).a(-Math.PI/2,-12,12).stroke()
-                         .p().m(-6,-12).l(-6,4).m(-6,12).l(-8,4).a(Math.PI/3,-4,4).z()
-                             .m(-12,12).l(-14,5).a(Math.PI/3,-17,7).z()
-                        .drw();
-g2.symbol.ifo3pos = g2().style({ls:"@nodcolor",lc:"round",fs:"@ls"})
-                        .p().m(0,5).a(-Math.PI/2,0,0).a(Math.PI/2,0,-5)
-                            .m(12,-12).a(Math.PI/2,12,12).stroke()
-                        .p().m(6,12).l(6,-4).m(6,-12).l(8,-4).a(-Math.PI/3,4,-4).z()
-                            .m(12,12).l(14,5).a(-Math.PI/3,17,7).z()
-                            .m(8,0).l(20,0).m(28,0).l(20,-2).a(Math.PI/3,20,2).z()
-                        .drw();
-g2.symbol.ifo3neg = g2().style({ls:"@nodcolor",lc:"round",fs:"@ls"})
-                        .p().m(0,5).a(Math.PI/2,0,0).a(-Math.PI/2,0,-5)
-                            .m(-12,-12).a(-Math.PI/2,-12,12).stroke()
-                        .p().m(-6,-12).l(-6,4).m(-6,12).l(-8,4).a(Math.PI/3,-4,4).z()
-                            .m(-12,12).l(-14,5).a(Math.PI/3,-17,7).z()
-                            .m(-8,0).l(-20,0).m(-28,0).l(-20,-2).a(-Math.PI/3,-20,2).z()
-                        .drw();
                        
-g2.symbol.dot = g2().cir(0,0,2,{fs:"@ls"});
-g2.symbol.sqr = g2().rec(-2,-2,4,4,{fs:"@ls"});
-g2.symbol.tilde = g2().p().m(0,4).a(Math.PI/2,0,0).a(-Math.PI/2,0,-4).stroke({lc:"round"});
-g2.symbol.arrow = g2().p().m(0,0).l(-7,-2).a(Math.PI/3,-7,2).z().drw({fs:"@ls",lj:"round"});
-g2.symbol.tick = g2().p().m(0,-3).l(0,3).stroke({lc:"round"});
-g2.symbol.arrowtick = g2().p().m(0,-3).l(0,3).m(0,0).l(-7,-2).a(Math.PI/3,-7,2).z().drw({lj:"round",lc:"round"});
+g2.symbol.dot = g2().cir(0,0,1.5,{fs:"@ls",lwnosc:true});
+g2.symbol.sqr = g2().rec(-1.5,-1.5,3,3,{fs:"@ls",lwnosc:true});
+g2.symbol.tilde = g2().p().m(0,2).a(Math.PI/2,0,0).a(-Math.PI/2,0,-2).stroke({lc:"round"});
+g2.symbol.arrow = g2().p().m(0,0).l(-7,-2).a(Math.PI/3,-7,2).z().drw({fs:"@ls",lj:"round",lwnosc:true});
+g2.symbol.tick = g2().p().m(0,-2).l(0,2).stroke({lc:"round"});
+g2.symbol.arrowtick = g2().p().m(0,-2).l(0,2).m(0,0).l(-7,-2).a(Math.PI/3,-7,2).z().drw({lj:"round",lc:"round"});
+g2.symbol.ifo2pos = g2().style({ls:"@nodcolor",lc:"round",fs:"@ls",lw:1,lwnosc:true})
+                        .p().m(0,2).a(-Math.PI/2,0,0).a(Math.PI/2,0,-2)
+                            .m(6,-6).a(Math.PI/2,6,6).stroke()
+                        .p().m(3,6).l(3,-2).m(3,-6).l(4,-2).a(-Math.PI/3,2,-2).z()
+                            .m(7,3).a(-Math.PI/3,8.5,4).l(6,6).z()
+                        .drw();
+g2.symbol.ifo2neg = g2().style({ls:"@nodcolor",lj:"miter",fs:"@ls",lw:1,lwnosc:true})
+                         .p().m(0,2).a(Math.PI/2,0,0).a(-Math.PI/2,0,-2)
+                             .m(-6,-6).a(-Math.PI/2,-6,6).stroke()
+                         .p().m(-3,-6).l(-3,5).m(-3,6).l(-4,3).a(-Math.PI/3,-2,3).z()
+                             .m(-7,3).a(Math.PI/3,-8.5,4).l(-6,6).z()
+                        .drw();
+g2.symbol.ifo3pos = g2().style({ls:"@nodcolor",lc:"round",fs:"@ls",lw:1,lwnosc:true})
+                        .p().m(0,2).a(-Math.PI/2,0,0).a(Math.PI/2,0,-2)
+                            .m(6,-6).a(Math.PI/2,6,6).stroke()
+                        .p().m(3,6).l(3,-2).m(3,-6).l(4,-2).a(-Math.PI/3,2,-2).z()
+                            .m(7,3).a(-Math.PI/3,8.5,4).l(6,6).z()
+                            .m(4,0).l(10,0).m(14,0).l(10,-1).a(Math.PI/3,10,1).z()
+                        .drw();
+g2.symbol.ifo3neg = g2().style({ls:"@nodcolor",lc:"round",fs:"@ls",lw:1,lwnosc:true})
+                        .p().m(0,2).a(Math.PI/2,0,0).a(-Math.PI/2,0,-2)
+                            .m(-6,-6).a(-Math.PI/2,-6,6).stroke()
+                        .p().m(-3,-6).l(-3,5).m(-3,6).l(-4,3).a(-Math.PI/3,-2,3).z()
+                            .m(-7,3).a(Math.PI/3,-8.5,4).l(-6,6).z()
+                            .m(-4,0).l(-10,0).m(-14,0).l(-10,-1).a(-Math.PI/3,-10,1).z()
+                        .drw();
 
 // ======================
 
@@ -721,12 +761,13 @@ g2.prototype.arc.proto = {
    }
 };
 
-// a:[pts,mode,args]
+// a:[pts,mode,itr,style]
 g2.prototype.ply.proto = {
    get pts() { return this.a[0]; },
    get itr() { return g2.prototype.ply.itrOf(this.a[0],this.a[2]); },
    get n() { return this.count || (this.count = this.itr(this.pts).count); },
    get closed() { return this.a[1] === true; },
+   get style() { return this.a[3]; },
    get len() {  // cannot cache polygon length, as points might be dynamically modified ...
       var i, j, itr = this.itr, pi = itr(this.pts,0), pj, n = this.n, closed = this.closed, len = 0;
       for (i=0, j=1; i < (closed ? n : n-1); i++, j=(i+1)%n) {

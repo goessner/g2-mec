@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>g2 - beam</title>
+</head>
+
+<body>
+    <h1>g2 - beam</h1>
+    <canvas id="c" width="600" height="500"></canvas>
+    <script src='../../g2/g2.js'></script>
+    <script src='../g2.mec.js'></script>
+    <script>
+      var pi = Math.PI,
+          A = {x:300,y:-150}, B = {x:300,y:0}, C = {x:200,y:0}, D = {x:0,y:150}, G = {x:0,y:0},
+          g = g2();
+
+         g.cartesian()
+          .pan(50,250)
+          .grid()
+          .beam2([A,B,G])
+          .bar(C,D,{lw:3})
+          .use("nod",C)
+          .use("nodfix",{x:0,y:150,w:-pi/2,scl:1})
+          .ground([{x:0,y:20},{x:0,y:-20}])
+          .vec({x:250,y:0},{dx:0,dy:-50},{ls:"darkred",lw:2})
+             .label("F","end")
+//          .use("origin")
+          .exe(document.getElementById("c").getContext("2d"));
+   </script>
+</body>
+</html>

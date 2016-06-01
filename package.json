@@ -1,6 +1,6 @@
 {
   "name": "g2.mec",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "g2-mec - Mechanical extension for g2",
   "main": "g2.mec.js",
   "scripts": {

@@ -27,20 +27,26 @@ against scaling.
 
 Element functions have individual arguments.
 
-Element | Meaning
--------- | --------
-`vec(p,r,style)` | Linear vector element by start point `p` and end point or direction `r`.
-`avec(p,r,w,dw,style)` | Arc vector element by center point `p`, radius `r`, start angle `w` and angular range `dw`. 
-`dim(p,r,args)` | Linear dimension element by start point `p` and end point or direction `r`.
-`adim(p,r,w,dw,args)` |  Arc dimension element by center point `p`, radius `r`, start angle `w` and angular range `dw`.
-`slider(p,w,args)` | Slider element by center point `p` and rotation angle `w`.
-`spring(p,r,args)` | Symbolical Spring element by start point `p` and end point or direction `r`.
-`damper(p,r,args)` | Symbolical Damper element by start point `p` and end point or direction `r`.
-`ground(pts,closed,args)` | Polygonial ground element by points array `pts` and closed flag `closed`.
-`bar(p,r)` | Bar element by start point `p` and end point or direction `r`.
-`bar2(p,r)` | Alternate Bar2 element by start point `p` and end point or direction `r`.
-`link(pts,mode)` | Link element by points array `pts` and mode flag [`true,false,'split'`].
-`link2(pts,mode)` | Alternate Link2 element by points array `pts` and mode flag [`true,false,'split'`].
+Element | Image | Meaning
+-------- | -------- | ------
+`vec(p,r,style)` | ![vec-def](img/vec-def.png) | Linear vector element by start point `p` and end point or direction `r`.
+`avec(p,r,w,dw,style)` | ![avec-def](img/avec-def.png) |  Arc vector element by center point `p`, radius `r`, start angle `w` and angular range `dw`. 
+`dim(p,r,args)` | ![dim-def](img/dim-def.png) |  Linear dimension element by start point `p` and end point or direction `r`.
+`adim(p,r,w,dw,args)` | ![adim-def](img/adim-def.png) |   Arc dimension element by center point `p`, radius `r`, start angle `w` and angular range `dw`.
+`slider(p,w,args)` | ![slider-def](img/slider-def.png) |  Slider element by center point `p` and rotation angle `w`.
+`spring(p,r,args)` | ![spring-def](img/spring-def.png) |  Symbolical Spring element by start point `p` and end point or direction `r`.
+`damper(p,r,args)` | ![damper-def](img/damper-def.png) |  Symbolical Damper element by start point `p` and end point or direction `r`.
+`ground(pts,closed,args)` | ![ground-def](img/ground-def.png) |  Polygonial ground element by points array `pts` and closed flag `closed`.
+`bar(p,r)` | ![bar-def](img/bar-def.png) |  Bar element by start point `p` and end point or direction `r`.
+`bar2(p,r)` | ![bar2-def](img/bar2-def.png) |  Alternate Bar2 element by start point `p` and end point or direction `r`.
+`link(pts,closed)` | ![link-def](img/link-def.png) |  Link element by points array `pts` and closed flag [`true,false`].
+`link2(pts,closed)` | ![link2-def](img/link2-def.png) |  Alternate Link2 element by points array `pts` and closed flag [`true,false`].
+`beam(pts)` | ![beam-def](img/beam-def.png) |  Beam element by points array `pts`.
+`beam2(pts)` | ![beam2-def](img/beam2-def.png) |  Alternate Beam2 element by points array `pts`.
+`load(pts,spacing,style)` | ![load-def](img/load-def.png) |  Load element by points array `pts` and spacing `spacing` between arrows.
+`pulley(p,r)` | ![pulley-def](img/pulley-def.png) |  Pulley element by center point `p` and radius `r`.
+`pulley2(p,r)` | ![pulley2-def](img/pulley2-def.png) |  Pulley2 element by position `pos={x,y,w}` including rotation angle `w` and radius `r`.
+`rope(p1,r1,p2,r2)` | ![rope-def](img/rope-def.png) |  Rope element tangential to two circles with given center points `p1` and `p2` and radii `r1` and `r2`. You can switch between the four possible tangents by the sign of the radii.
 
 
 ### Mechanical Styles

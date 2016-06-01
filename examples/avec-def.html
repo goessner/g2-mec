@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>g2 - avec-def</title>
+</head>
+
+<body>
+    <h1>g2 - avec-def</h1>
+    <canvas id="c" width="100" height="100"></canvas>
+    <script src='../../g2/g2.js'></script>
+    <script src='../g2.mec.js'></script>
+    <script>
+      var g = g2(), pi = Math.PI;
+         g.cartesian()
+          .lin(30,50,70,50,{ld:[10,4,2,4]})
+          .lin(50,30,50,70,{ld:[10,4,2,4]})
+             .label("p",0.25,"left")
+          .lin(50,50,50+30*Math.cos(pi/6),50+30*Math.sin(pi/6),{ld:[10,4,2,4]})
+             .label("r",0.4,"left")
+             .label("w","end")
+          .avec({x:50,y:50},30,pi/6,2*pi/3,{ls:"@nodcolor",lw:2})
+             .label("dw")
+          .exe(document.getElementById("c").getContext("2d"));
+   </script>
+</body>
+</html>

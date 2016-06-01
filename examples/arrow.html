@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>g2 - simple arrow</title>
+</head>
+
+<body>
+    <h1>g2 - simple arrow</h1>
+    <canvas id="c" width="200" height="100"></canvas>
+    <script src='../../g2/g2.js'></script>
+    <script src='../g2.mec.js'></script>
+    <script>
+      var t = 5,
+         arrow = g2().m(-7,1.5).l(0,0).l(-7,-1.5).drw({fs:"@ls",lw:1,lj:"round"}),
+         g = g2();
+         g.cartesian()
+          .style({ls:"red",lw:1})
+          .beam2([50,50,150,50]) 
+          .mark("ifo3neg","beg", 1) 
+          .mark("ifo3pos","end", 1)
+          .exe(document.getElementById("c").getContext("2d"));
+   </script>
+</body>
+</html>
