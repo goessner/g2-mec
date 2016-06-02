@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>g2 - pulleys</title>
+</head>
+
+<body>
+    <h1>g2 - pulleys</h1>
+    <canvas id="c" width="600" height="500"></canvas>
+    <script src='https://rawgit.com/goessner/g2/master/g2.min.js'></script>
+    <script src='../g2.mec.js'></script>
+    <script>
+      var pi = Math.PI, s0 = 100, h0 = 200, ds = 0, dh = 0, phi = 0, psi = 0, dirty = true,
+          A = {x:200,y:400,w:pi}, B = {x:400,y:400}, C = {x:280,y:200}, D = {x:440,y:300}, G = {x:0,y:0},
+          s = 
+          g = g2(),
+          ctx = document.getElementById("c").getContext("2d");
+          
+       function render() {
+         if (dirty) {
+            ds = 40*phi;
+            dh = ds/2;
+            psi = -phi/4;
+            g.cartesian()
+            .clr()
+            .grid()
+            .rope(B,40,C,80)
+            .rope(C,-80,A,0)
+            .rope(B,-40,D,0)
+            .slider({x:440,y:270},0,{b:40,h:60})
+            .pulley2({x:400,y:400,w:phi},40)
+            .pulley2({x:280,y:400-h0-dh,w:psi},80)
+            .use("nodfix",A)
+            .use("nodfix",B)
+            .use("nod",{x:280,y:400-h0-dh})
+            .exe(ctx);
+            dirty = false;
+          } 
+          requestAnimationFrame(render);
+       }
+       render();
+   </script>
+</body>
+</html>

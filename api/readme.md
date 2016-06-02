@@ -15,16 +15,17 @@ Mechanical extensions.
     * [.slider([p], w, args)](#g2+slider) ⇒ <code>object</code>
     * [.spring([p], [r], args)](#g2+spring) ⇒ <code>object</code>
     * [.damper([p], [r], args)](#g2+damper) ⇒ <code>object</code>
-    * [.link(pts, [mode], [style])](#g2+link) ⇒ <code>object</code>
-    * [.link2(pts, [mode], [style])](#g2+link2) ⇒ <code>object</code>
-    * [.beam(pts, [mode], [style])](#g2+beam) ⇒ <code>object</code>
-    * [.beam2(pts, [mode], [style])](#g2+beam2) ⇒ <code>object</code>
-    * [.bar([p], [r])](#g2+bar) ⇒ <code>object</code>
+    * [.link(pts, [closed], [style])](#g2+link) ⇒ <code>object</code>
+    * [.link2(pts, [closed])](#g2+link2) ⇒ <code>object</code>
+    * [.beam(pts)](#g2+beam) ⇒ <code>object</code>
+    * [.beam2(pts)](#g2+beam2) ⇒ <code>object</code>
+    * [.bar([p], [r], [style])](#g2+bar) ⇒ <code>object</code>
     * [.bar2([p], [r])](#g2+bar2) ⇒ <code>object</code>
     * [.pulley([p], [r])](#g2+pulley) ⇒ <code>object</code>
     * [.pulley2([pos], [r])](#g2+pulley2) ⇒ <code>object</code>
     * [.rope([p1], [r1], [p2], [r2])](#g2+rope) ⇒ <code>object</code>
     * [.ground(pts, [closed], [args])](#g2+ground) ⇒ <code>object</code>
+    * [.load(pts, spacing, [style])](#g2+load) ⇒ <code>object</code>
   * _static_
     * [.State](#g2.State) : <code>object</code>
     * [.symbol](#g2.symbol) : <code>object</code>
@@ -124,7 +125,7 @@ Draw slider.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| [p] | <code>object</code> | <code>{x:0,y:0}</code> | Center point. |
+| [p] | <code>object</code> | <code>{x:0,y:0,w:0}</code> | Center point. |
 | w | <code>angle</code> |  | Rotation angle [rad] |
 | args | <code>object</code> |  | Arguments object holding style properties. See 'g2.prototype.style' for details. |
 | [args.b] | <code>float</code> | <code>32</code> | Slider breadth. |
@@ -160,7 +161,7 @@ Draw line with centered square damper symbol.
 | [args.style] | <code>any</code> |  | Style property. See 'g2.prototype.style' for details. |
 
 <a name="g2+link"></a>
-### g2.link(pts, [mode], [style]) ⇒ <code>object</code>
+### g2.link(pts, [closed], [style]) ⇒ <code>object</code>
 Draw polygonial link.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
@@ -169,11 +170,11 @@ Draw polygonial link.
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | pts | <code>array</code> |  | Array of points. |
-| [mode] | <code>bool</code> &#124; <code>&#x27;split&#x27;</code> | <code>false</code> | true:closed<br> false:non-closed<br> 'split':intermittend lines. |
+| [closed] | <code>bool</code> | <code>false</code> | true:closed<br> false:non-closed. |
 | [style] | <code>object</code> |  | Style object. |
 
 <a name="g2+link2"></a>
-### g2.link2(pts, [mode], [style]) ⇒ <code>object</code>
+### g2.link2(pts, [closed]) ⇒ <code>object</code>
 Draw alternate glossy polygonial link.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
@@ -182,37 +183,32 @@ Draw alternate glossy polygonial link.
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | pts | <code>array</code> |  | Array of points. |
-| [mode] | <code>bool</code> &#124; <code>&#x27;split&#x27;</code> | <code>false</code> | true:closed, false:non-closed, 'split:intermittend lines. |
-| [style] | <code>object</code> |  | Style object. |
+| [closed] | <code>bool</code> | <code>false</code> | true:closed<br> false:non-closed. |
 
 <a name="g2+beam"></a>
-### g2.beam(pts, [mode], [style]) ⇒ <code>object</code>
+### g2.beam(pts) ⇒ <code>object</code>
 Draw polygonial beam.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - this  
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| pts | <code>array</code> |  | Array of points. |
-| [mode] | <code>bool</code> &#124; <code>&#x27;split&#x27;</code> | <code>false</code> | true:closed<br> false:non-closed<br> 'split':intermittend lines. |
-| [style] | <code>object</code> |  | Style object. |
+| Param | Type | Description |
+| --- | --- | --- |
+| pts | <code>array</code> | Array of points. |
 
 <a name="g2+beam2"></a>
-### g2.beam2(pts, [mode], [style]) ⇒ <code>object</code>
+### g2.beam2(pts) ⇒ <code>object</code>
 Draw alternate glossy polygonial beam.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - this  
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| pts | <code>array</code> |  | Array of points. |
-| [mode] | <code>bool</code> &#124; <code>&#x27;split&#x27;</code> | <code>false</code> | true:closed, false:non-closed, 'split:intermittend lines. |
-| [style] | <code>object</code> |  | Style object. |
+| Param | Type | Description |
+| --- | --- | --- |
+| pts | <code>array</code> | Array of points. |
 
 <a name="g2+bar"></a>
-### g2.bar([p], [r]) ⇒ <code>object</code>
+### g2.bar([p], [r], [style]) ⇒ <code>object</code>
 Draw bar.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
@@ -222,6 +218,7 @@ Draw bar.
 | --- | --- | --- | --- |
 | [p] | <code>v2</code> | <code>{x:0,y:0}</code> | Start point. |
 | [r] | <code>v2</code> | <code>{dx:10,dy:0}</code> | Bar vector in absolute {x,y}, relative {dx,dy} or polar {r,w} coordinates. |
+| [style] | <code>object</code> |  | Style object. |
 
 <a name="g2+bar2"></a>
 ### g2.bar2([p], [r]) ⇒ <code>object</code>
@@ -245,7 +242,7 @@ Draw pulley.
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | [p] | <code>v2</code> | <code>{x:0,y:0}</code> | Center point. |
-| [r] | <code>float</code> | <code>20</code> | Radius. |
+| [r] | <code>float</code> | <code>25</code> | Radius. |
 
 <a name="g2+pulley2"></a>
 ### g2.pulley2([pos], [r]) ⇒ <code>object</code>
@@ -257,7 +254,7 @@ Draw alternate pulley.
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | [pos] | <code>object</code> | <code>{x:0,y:0,w:0}</code> | Center point position and rotation angle. |
-| [r] | <code>float</code> | <code>20</code> | Radius. |
+| [r] | <code>float</code> | <code>25</code> | Radius. |
 
 <a name="g2+rope"></a>
 ### g2.rope([p1], [r1], [p2], [r2]) ⇒ <code>object</code>
@@ -287,6 +284,19 @@ Polygon ground.
 | [args] | <code>object</code> |  | Arguments object. |
 | [args.h] | <code>float</code> | <code>4</code> | Ground shade line width. |
 | [args.pos] | <code>string</code> | <code>&quot;right&quot;</code> | Ground shade position ["left","right"]. |
+
+<a name="g2+load"></a>
+### g2.load(pts, spacing, [style]) ⇒ <code>object</code>
+Polygonial line load. The first and last point define the base line onto whichthe load is acting orthogonal.
+
+**Kind**: instance method of <code>[g2](#g2)</code>  
+**Returns**: <code>object</code> - this  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| pts | <code>array</code> | Array of load contour points. |
+| spacing | <code>real</code> | Spacing of the vectors drawn as a positive real number, interprete as<br>                       * spacing &lt; 1: spacing = 1/m with a partition of m.<br>                       * spacing &gt; 1: length of spacing. |
+| [style] | <code>object</code> | Arguments object. |
 
 <a name="g2.State"></a>
 ### g2.State : <code>object</code>

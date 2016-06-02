@@ -532,7 +532,9 @@ g2.prototype.load = function load(pts,spacing,style) {
    this.ply(pts,false,Object.assign({fs:"@linkfill"},style,{ls:"transparent"}));
 
    while (!(val = itr.next()).done)
-      this.vec(val.value.p2,val.value.p1);
+      this.vec(val.value.p2,val.value.p1,style);
+
+   this.proxy(g2.prototype.ply,[pts,false]);
 
    return this;
 }

@@ -23,8 +23,15 @@
           .use("nod",C)
           .use("nodfix",{x:0,y:150,w:-pi/2,scl:1})
           .ground([{x:0,y:20},{x:0,y:-20}])
-          .vec({x:250,y:0},{dx:0,dy:-50},{ls:"darkred",lw:2})
+          .vec({x:250,y:-4},{dx:0,dy:-50},{ls:"darkred",lw:2})
              .label("F","end")
+          .load([304,0,350,-50,350,-150,304,-150],1/8,{ls:"darkred"})
+             .label("q","0.8",-3)
+          .dim({x:0,y:-200},{dx:200,dy:0}).label("4a")
+          .dim({x:200,y:-200},{dx:50,dy:0}).label("a")
+          .dim({x:250,y:-200},{dx:50,dy:0}).label("a")
+          .dim({x:-30,y:0},{dx:0,dy:150}).label("3a","mid","left")
+          .dim({x:-30,y:0},{dx:0,dy:-150}).label("3a")
 //          .use("origin")
           .exe(document.getElementById("c").getContext("2d"));
    </script>
