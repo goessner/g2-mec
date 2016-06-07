@@ -7,38 +7,85 @@
 
 <body>
     <h1>g2 - pulleys</h1>
-    <canvas id="c" width="600" height="500"></canvas>
-    <script src='https://rawgit.com/goessner/g2/master/g2.min.js'></script>
+    <canvas id="c" width="601" height="501"></canvas><br>
+    <span onclick="onBackward()" style="cursor:pointer">&#9668;</span>
+    <b>&#8545;</b>
+    <span onclick="onForward()" style="cursor:pointer">&#9658;</span>
+    <input type="range" id="phi_in" style="width:550px"
+           value="0" min="0" max="360" step="1" oninput="slide()">
+    <output id="phi_out" for="phi_in">0°</output>
+    <script src='https://cdn.rawgit.com/goessner/g2/v2.1/g2.min.js'></script>
     <script src='../g2.mec.js'></script>
+    <script src='../../morphr/morphr.js'></script>
     <script>
-      var pi = Math.PI, s0 = 100, h0 = 200, ds = 0, dh = 0, phi = 0, psi = 0, dirty = true,
-          A = {x:200,y:400,w:pi}, B = {x:400,y:400}, C = {x:280,y:200}, D = {x:440,y:300}, G = {x:0,y:0},
-          s = 
-          g = g2(),
+      var pi = Math.PI, s0 = 290, h0 = 200, ds = 0, dh = 0, psi = 0, dirty = true,
+          phi = 0, phi_min = 0, phi_max = 2*pi, dphi = pi/180, phi_dot = pi,
+          A = {x:200,y:400,w:pi}, B = {x:400,y:400}, P1 = {x:400,y:400}, P2, M, R1 = 40, R2 = 80,
+          g = g2(), 
           ctx = document.getElementById("c").getContext("2d");
-          
+
+      function value(obj,prop,dval) {
+         var val0 = obj[prop];
+         return function(q) { obj[prop] = val0 + q*dval; };
+      }
+
+      function onForward() {
+         var dphi = phi_max - phi, dt = dphi/phi_dot;
+         Morphr.create(dt,0,"sinoid")          // create and configure Morphr object ...
+               .register(move(phi,dphi,dt))
+               .register(render)
+               .start();
+      }
+      function onBackward() {
+         var dphi = phi_min - phi, dt = -dphi/phi_dot;
+         Morphr.create(dt,0,"sinoid")          // create and configure Morphr object ...
+               .register(move(phi,dphi,dt))
+               .register(render)
+               .start();
+      }
+
+       function slide() {
+          phi_out.value = phi_in.value + "°";
+          phi = phi_in.value/180*pi;
+          dirty = true;
+          render();
+       }
+       function move(phi0,dphi,dt) {
+          return function(q) {
+             phi = phi0 + q*dphi;
+             phi_in.value = phi/pi*180;
+             phi_out.value = phi_in.value+"°";
+             dirty = true;
+          }
+       }
        function render() {
+//         console.log(phi);
          if (dirty) {
-            ds = 40*phi;
-            dh = ds/2;
+            ds = -R1*phi;
+            dh =  R1*phi/2;
             psi = -phi/4;
+            P1.w = phi;
+            P2 = {x:200+R2,y:400-h0-dh,w:psi};
+            M =  {x:400+R1,y:400-s0-30-ds};
             g.cartesian()
+            .del()           // delete command queue ... !
             .clr()
             .grid()
-            .rope(B,40,C,80)
-            .rope(C,-80,A,0)
-            .rope(B,-40,D,0)
-            .slider({x:440,y:270},0,{b:40,h:60})
-            .pulley2({x:400,y:400,w:phi},40)
-            .pulley2({x:280,y:400-h0-dh,w:psi},80)
+            .rope(P1,R1,P2,R2)
+            .rope(P2,-R2,A)
+            .rope(P1,-R1,M)
+            .slider(M,0,{b:40,h:60})
+            .pulley2(P1,R1)
+            .pulley2(P2,R2)
             .use("nodfix",A)
             .use("nodfix",B)
-            .use("nod",{x:280,y:400-h0-dh})
+            .use("nod",P2)
             .exe(ctx);
             dirty = false;
           } 
-          requestAnimationFrame(render);
+//          requestAnimationFrame(render);
        }
+
        render();
    </script>
 </body>
