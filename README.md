@@ -177,6 +177,15 @@ Linear elements provide parameterized numerical or named locations.
 # API Reference
 See the [API Reference](api/readme.md) for details.
 
+## GitCDN
+Use the link [https://gitcdn.xyz/repo/goessner/g2-mec/master/g2.mec.min.js](https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js)
+for getting the latest commit as a raw file.
+
+In HTML use ...
+```html
+<script src="https://gitcdn.xyz/repo/goessner/g2-mec/master/g2.mec.min.js"></script>
+```
+
 
 # License
 `g2.mec` is licensed under the terms of the MIT License.
