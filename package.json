@@ -1,7 +1,18 @@
 {
-  "name": "g2.mec",
-  "version": "0.4.2",
+  "name": "@goessner/g2-mec",
+  "version": "0.4.4",
   "description": "g2-mec - Mechanical extension for g2",
+  "keywords": [
+    "vector",
+    "graphics",
+    "2d",
+    "command queue",
+    "canvas",
+    "svg",
+    "javascript",
+    "mechanical",
+    "mechanism"
+  ],
   "main": "g2.mec.js",
   "scripts": {
     "build": "npm run minify && npm run jsdoc && npm run cptest",

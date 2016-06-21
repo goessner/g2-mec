@@ -451,16 +451,16 @@ g2.prototype.rope = function rope(p1,r1,p2,r2,style) {
  * @param {string} [args.pos=right] Ground shade position ["left","right"].
  */
 g2.prototype.ground = function ground(pts,closed,args) {
-   var i=0, p0, pp, pn, p, e0, dx, dy, ep, en, len, lam, eq = [],
+   var i, p0, pp, pn, p, e0, dx, dy, ep, en, len, lam, eq = [],
        h = args && args.h || 4,
        sign = args && args.pos === "left" ? 1 : -1,
        itr =  g2.prototype.ply.itrOf(pts,args);
-   p0 = pp = itr(pts,i=0);
+   p0 = pp = itr(i=0);
    eq.push(p0);
-   p = itr(pts,i=1);
+   p = itr(i=1);
    dx = p.x-pp.x; dy = p.y-pp.y; len = Math.hypot(dx,dy) || 1;
    e0 = ep = {x:dx/len,y:dy/len};
-   for (pn = itr(pts,++i); !pn.done; pn = itr(pts,++i)) {
+   for (pn = itr(++i); i < itr.len; pn = itr(++i)) {
       dx = pn.x-p.x; dy = pn.y-p.y; len = Math.hypot(dx,dy) || 1;
       en = {x:dx/len,y:dy/len};
       lam = (1 - en.x*ep.x - en.y*ep.y) / (ep.y*en.x - ep.x*en.y);
@@ -766,14 +766,14 @@ g2.prototype.arc.proto = {
 // a:[pts,mode,itr,style]
 g2.prototype.ply.proto = {
    get pts() { return this.a[0]; },
-   get itr() { return g2.prototype.ply.itrOf(this.a[0],this.a[2]); },
-   get n() { return this.count || (this.count = this.itr(this.pts).count); },
+   get itr() { return this.a[2] || g2.prototype.ply.itrOf(this.a[0],this.a[3]); },
+   get n() { return this.itr.len; },
    get closed() { return this.a[1] === true; },
    get style() { return this.a[3]; },
    get len() {  // cannot cache polygon length, as points might be dynamically modified ...
-      var i, j, itr = this.itr, pi = itr(this.pts,0), pj, n = this.n, closed = this.closed, len = 0;
+      var i, j, itr = this.itr, pi = itr(0), pj, n = this.n, closed = this.closed, len = 0;
       for (i=0, j=1; i < (closed ? n : n-1); i++, j=(i+1)%n) {
-         pj = itr(this.pts,j);
+         pj = itr(j);
          len += Math.hypot(pj.x-pi.x, pj.y-pi.y);
          pi = pj;
       }
@@ -799,7 +799,7 @@ g2.prototype.ply.proto = {
    },
    pIdx: function(j) {
       var i = Math.max(j-1,0), k = Math.min(j+1,this.n-1), itr = this.itr,
-          pi = itr(this.pts,i), pj = itr(this.pts,j), pk = itr(this.pts,k),
+          pi = itr(i), pj = itr(j), pk = itr(k),
           dx = pk.x - pi.x, dy = pk.y - pi.y, 
           dd = this.g2.state.cartesian ? Math.hypot(dx,dy) : -Math.hypot(dx,dy);
       return { x: pj.x,
@@ -809,14 +809,14 @@ g2.prototype.ply.proto = {
       };
    },
    pPar: function(u) {
-      var i, j, itr = this.itr, pi = itr(this.pts,0), pj, n = this.n, len = this.len, 
+      var i, j, itr = this.itr, pi = itr(0), pj, n = this.n, len = this.len, 
           closed = this.closed, s = 0, dx, dy, ds, su, ui, 
           sgn = this.g2.state.cartesian ? 1 : -1;
       if (len > 0) {
          u = Math.max(0,Math.min(1,u));  // 0 <= u <= 1
          su = u*len;
          for (i=0, j=1; i <= (closed ? n : n-1); i++, j=(i+1)%n) {
-            pj = itr(this.pts,j);
+            pj = itr(j);
             dx = pj.x-pi.x; 
             dy = pj.y-pi.y;
             ds = Math.hypot(dx,dy);
@@ -832,7 +832,7 @@ g2.prototype.ply.proto = {
             pi = pj;
         }
       }
-      return itr(this.pts,0);
+      return itr(0);
    },
 };
 
@@ -843,3 +843,59 @@ g2.prototype.use.proto = {
    get r() { return 5; },
    p: g2.prototype.cir.proto.p
 };
+
+/*
+   hatch: function hatch(val) {
+      var ctx = document.createElement('canvas').getContext('2d'), 
+          sz = +val[3] || 10, sz2 = (sz+1)*0.5;
+      ctx.canvas.width = ctx.canvas.height = sz;
+      ctx.fillStyle = val[1] || "white";
+      ctx.fillRect(0,0,sz,sz);
+      ctx.strokeStyle = val[0] || "black";
+      ctx.lineWidth = +val[2] || 1;
+      ctx.lineCap = "square";
+      ctx.beginPath();
+      ctx.moveTo(sz2,0.5);
+      ctx.lineTo(sz+0.5,sz2);
+      ctx.moveTo(0.5,sz2);
+      ctx.lineTo(sz2,sz+0.5);
+      ctx.stroke();
+      return ctx.createPattern(ctx.canvas,'repeat');
+   }
+*/
+
+/**
+ * Debug helper method.
+ * Convert g2 command queue to JSON formatted string.
+ * @param {string} [space] Number of spaces to use for indenting JSON output.
+ * @return {string} JSON string of command queue.
+ */
+/*
+g2.prototype.dump = function(space) {
+   function trace(obj) {
+      var out = [],o,cmd,a,c,args;
+      for (var i=0, n=obj.cmds.length; i < n; i++) {
+         args = [];
+         cmd = obj.cmds[i];
+         a = cmd.a;
+         for (var j=0,m=a && a.length || 0; j < m; j++) {
+            if (typeof a[j] === "object" && a[j] instanceof g2) {
+               if (a[j] !== obj) args.push(trace(a[j]));
+            }
+            else if (a[j] !== undefined)
+               args.push(a[j]);
+         }
+         c = /\W*function\s+([\w\$]+)\(/.exec(cmd.c.toString())[1];
+         if (args.length) {
+            o = {};
+            o[c] = args;
+         }
+         else
+            o = c;
+         out.push(o);
+      }
+      return out;
+   }
+   return JSON.stringify(trace(this), undefined, space);
+};
+*/

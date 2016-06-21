@@ -1,3 +1,6 @@
+[![License](http://img.shields.io/:license-mit-blue.svg)](https://github.com/goessner/g2/license.txt)
+[![npm](https://img.shields.io/npm/v/@goessner/g2-mec.svg)](https://www.npmjs.com/package/@goessner/g2-mec)
+
 # g2.mec.js #
 
 ## g2 extension for mechanical applications ##
@@ -173,7 +176,6 @@ Linear elements provide parameterized numerical or named locations.
 | Linear elements | `lin, vec, dim`<br>`arc, avec, adim`<br>`spring, damper`<br> `bar, bar2`| `0.5` | `beg, mid, end`<br> normalized numerical parameter | `-1,0,1` | ![linear markers](img/lin-markers.png)
 | Polygonial elements | `ply, ground`<br>`link, link2` | `0.5` | `beg, mid, end`<br> `#index` <br> normalized numerical parameter |`-1,0,1` | ![polygonial markers](img/poly-markers.png)
 
-
 # API Reference
 See the [API Reference](api/readme.md) for details.
 
@@ -197,6 +199,15 @@ In HTML use ...
 
 
 #Change Log
+
+## 0.4.4 - 2016-06-21
+### Added
+
+* `g2.spline` performing 'centripetal Catmull-Rom' interpolation.
+
+### Modified
+
+* modified `g2.prototype.ply.iterator` integrated.
 
 
 ## 0.4.0 - 2016-05-24

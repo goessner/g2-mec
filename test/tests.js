@@ -55,6 +55,13 @@ var tests = [
  .link2([120,20,140,55,160,30],true)
  `
 },
+{ title: "beam",
+  src: `g2()
+ .cartesian()
+ .beam([20,70,180,70,180,40])
+ .beam2([10,50,160,50,160,20])
+ `
+},
 { title: "vec",
   src: `g2()
  .cartesian()
@@ -72,7 +79,8 @@ var tests = [
  .slider({x:40,y:50},pi/6)
  .spring({x:30,y:20},{x:90,y:30})
  .damper({x:50,y:80},{dx:80,dy:0})
- .ground([100,20,180,20,180,80])`
+ .ground([100,20,180,20,180,80])
+`
 },
 { title: "label",
   src: `g2()
