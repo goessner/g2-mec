@@ -84,18 +84,6 @@ var tests = [
 },
 { title: "label",
   src: `g2()
- .rec(50,30,100,40).label("c")
-                   .label("s","s")
-                   .label("se","se")
-                   .label("e","e")
-                   .label("ne","ne")
-                   .label("n","n")
-                   .label("nw","nw")
-                   .label("w","w")
-                   .label("sw","sw")`
-},
-{ title: "rect\nlabels\ncartesian",
-  src: `g2()
  .cartesian()
  .rec(50,30,100,40).label("c")
                    .label("s","s")
@@ -108,18 +96,6 @@ var tests = [
                    .label("sw","sw")`
 },
 { title: "circular\nlabels",
-  src: `g2()
- .cir(100,50,20).label("c")
-                .label("s","s")
-                .label("se","se")
-                .label("e","e")
-                .label("ne","ne")
-                .label("n","n")
-                .label("nw","nw")
-                .label("w","w")
-                .label("sw","sw")`
-},
-{ title: "circular\nlabels\ncartesian",
   src: `g2()
  .cartesian()
  .cir(100,50,20).label("c")
@@ -134,6 +110,7 @@ var tests = [
 },
 { title: "use\nlabels",
   src: `g2()
+ .cartesian()
  .use("pol",{x:100,y:50}).label("s","s")
                          .label("se","se")
                          .label("e","e")
@@ -144,17 +121,6 @@ var tests = [
                          .label("sw","sw")`
 },
 { title: "linear\nlabels",
-  src: `g2()
- .lin(50,30,150,70)
-    .label("beg-right","beg")
-    .label("beg-left","beg","left")
-    .label("mid-right","mid","right")
-    .label("mid-left","mid","left")
-    .label("end-right","end")
-    .label("end-left","end","left")
-`
-},
-{ title: "linear\nlabels\ncartesian",
   src: `g2()
  .cartesian()
  .lin(50,30,150,70)
@@ -198,10 +164,58 @@ var tests = [
 },
 { title: "labels\nevaluate",
   src: `g2()
+ .cartesian()
  .cir(50,50,15)
     .label("@r","ne")
  .lin(80,50,175,50)
     .label("@len","mid")
+ `
+},
+{ title: "labels\npolygon",
+  src: `g2()
+ .cartesian()
+ .ply([50,25,100,25,100,75,150,75,150,25])
+    .mark("dot",0.6)
+    .label("ply",0.6,"left")
+ `
+},
+{ title: "labels\npolygon",
+  src: `g2()
+ .cartesian()
+ .ply([50,25,100,25,100,75,150,75,150,25])
+    .mark("dot",["beg","#2"])
+    .label("beg","beg","right")
+    .label("#2","#2","left")
+ `
+},
+{ title: "labels\npolygon",
+  src: `g2()
+ .cartesian()
+ .ply([50,25,100,25,100,75,150,75,150,25])
+    .mark("dot","#3")
+    .label("#3","#3","right")
+ `
+},
+{ title: "labels\nspline",
+  src: `g2()
+ .cartesian()
+ .spline([50,25,100,25,100,75,150,75,150,25])
+    .mark("dot","#2")
+    .label("#2","#2","right")
+ `
+},
+{ title: "labels\nspline",
+  src: `g2()
+ .cartesian()
+ .spline([50,25,100,25,100,75,150,75,150,25])
+    .mark("dot","#3")
+    .label("#3","#3","left")
+ `
+},
+{ title: "load",
+  src: `g2()
+ .cartesian()
+ .load([40,30,100,70,160,70,160,30],20)
  `
 },
 { title: "dimensions",
@@ -230,10 +244,11 @@ var tests = [
 },
 { title: "polygonial\nmarkers,\nparameter\nlocations",
   src: `g2()
+ .cartesian()
  .ply([50,25,100,25,100,75,150,75,150,25])
            .mark("dot",[0.3,0.5,0.7])`
 },
-{ title: "polygonial\nmarkers,\nindexed\nlocations\ncartesian",
+{ title: "polygonial\nmarkers,\nindexed\nlocations",
   src: `g2()
  .cartesian()
  .ply([50,25,100,25,100,75,150,75,150,25])
@@ -242,12 +257,14 @@ var tests = [
 },
 { title: "polygonial\nmarkers\nmid",
   src: `g2()
+ .cartesian()
  .ply([50,25,100,25,100,75,150,75,150,25])
            .mark("tilde",["mid"],1)
 `
 },
 { title: "polygonial\nmarkers\nall",
   src: `g2()
+ .cartesian()
  .ply([50,25,100,25,100,75,150,75,150,25],
       false,{lw:2})
            .mark("sqr",["all"])
@@ -255,6 +272,7 @@ var tests = [
 },
 { title: "polygonial\nmarkers",
   src: `g2()
+ .cartesian()
  .ply([50,25,100,25,100,75,150,75,150,25],
       false,{lw:2})
            .mark("dot",["beg","end"])
@@ -262,6 +280,7 @@ var tests = [
 },
 { title: "polygonial\nmarkers",
   src: `g2()
+ .cartesian()
  .ply([50,25,100,25,100,75,150,75,150,25],
       false,{lw:2})
            .mark("tilde","beg", 1)
@@ -270,6 +289,7 @@ var tests = [
 },
 { title: "polygonial\nmarkers",
   src: `g2()
+ .cartesian()
  .ply([50,25,100,25,100,75,150,75,150,35],
       false,{lw:1})
            .mark("arrowtick","beg", 1)
@@ -278,11 +298,35 @@ var tests = [
 },
 { title: "polygonial\nmarkers",
   src: `g2()
+ .cartesian()
  .ply([50,25,100,25,100,75,150,75,150,35],
       false,{lw:2})
- .cartesian()
    .mark("ifo2neg","beg", 1)
    .mark("ifo2pos","end", 1)
+`
+},
+{ title: "spline\nmarkers",
+  src: `g2()
+ .cartesian()
+ .spline([50,25,100,25,100,75,150,75,150,35],
+      false,{lw:2})
+   .mark("dot",["beg","end"])
+`
+},
+{ title: "spline\nmarkers",
+  src: `g2()
+ .cartesian()
+ .spline([50,25,100,25,100,75,150,75,150,35],
+      false,{lw:2})
+ .mark("tick","all",1)
+`
+},
+{ title: "spline\nmarkers",
+  src: `g2()
+ .cartesian()
+ .spline([50,25,85,50,100,75,150,75,150,35],
+      true,{lw:1.5})
+ .mark("dot","all",1)
 `
 },
 { title: "beam\nmarkers",
@@ -339,6 +383,7 @@ var tests = [
 },
 { title: "rope",
   src: `g2()
+ .cartesian()
  .rope({x:50,y:50},0,{x:125,y:50,w:pi/3},30)
  .use("nod",{x:50,y:50})
  .pulley({x:125,y:50,w:pi/3},30)

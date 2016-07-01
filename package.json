@@ -1,6 +1,6 @@
 {
-  "name": "@goessner/g2-mec",
-  "version": "0.4.4",
+  "name": "g2d-mec",
+  "version": "0.4.5",
   "description": "g2-mec - Mechanical extension for g2",
   "keywords": [
     "vector",

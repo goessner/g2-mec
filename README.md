@@ -1,5 +1,5 @@
 [![License](http://img.shields.io/:license-mit-blue.svg)](https://github.com/goessner/g2/license.txt)
-[![npm](https://img.shields.io/npm/v/@goessner/g2-mec.svg)](https://www.npmjs.com/package/@goessner/g2-mec)
+[![npm](https://img.shields.io/npm/v/g2d-mec.svg)](https://www.npmjs.com/package/g2d-mec)
 
 # g2.mec.js #
 
@@ -101,7 +101,7 @@ You can see a simple truss below, composed from mechanical symbols and elements.
 
 If you want to add text to a geometric element, you can always use the basic `txt` element. However some 
 element types support the smarter `label` element, which comes with a more intuitive relative positioning with respect 
-to its nearest previous element. 
+to its nearest previous element. Reliable positioning requires always *cartesian* coordinates.  
 
 Element | Meaning
 :--------: | :--------:
@@ -116,6 +116,7 @@ or named locations.
 | Rectangular elements | `rec, slider` | `c` |`c`<br>`e,ne,n,nw,w,sw,s,se` | number | ![img.rec-label.mec](img/rec-label.mec.png) |
 | Linear elements | `lin, vec, dim`<br>`arc, avec, adim`<br>`spring, damper`<br> `bar, bar2`| `0.5` | `beg, mid, end`<br> normalized numerical parameter | `left, right`<br>number | ![line with labels](img/line-label.mec.png)
 | Polygonial elements | `ply, ground`<br>`link, link2` | `0.5` | `beg, end`<br> `#index` <br> normalized numerical parameter | `left, right`<br>number | ![polygon with labels](img/poly-label.mec.png)
+| Spline element | `spline` | `beg` | `beg, end`<br> `#index` | `left, right`<br>number | ![spline with labels](img/spline-label.mec.png)
 
 If there is no offset distance specified, the global `g2.State.labelOffset`'s value is taken. Please note,
 that cardinal locations are not sensitive to transformations.
@@ -167,14 +168,15 @@ Element | Meaning
 `mark(type,loc,dir)` | Marker element placing marker symbol `type` at locations `loc` regarding to direction `dir`.
 
 Elements with a unique center and rectangular elements provide locations according cardinal directions.
-Linear elements provide parameterized numerical or named locations.
+Linear elements provide parameterized numerical or named locations. The `spline` element only support indexed locations. It does not support parameterized locations.
 
 | Type  | Elements | default | locations |dir | img |
 | :-----: | :------: | :-----: | :-----: | :-----: | :-----: |
 | Centered elements | `cir` | `c` | `c`<br>`e,ne,n,nw,w,sw,s,se`<br>normalized parameter | `-1,0,1` | ![circular markers](img/cir-markers.png) |
 | Rectangular elements | `rec, slider` | `c` | `c`<br>`e,ne,n,nw,w,sw,s,se` | `-1,0,1` | ![rectangular markers](img/rec-markers.png) |
 | Linear elements | `lin, vec, dim`<br>`arc, avec, adim`<br>`spring, damper`<br> `bar, bar2`| `0.5` | `beg, mid, end`<br> normalized numerical parameter | `-1,0,1` | ![linear markers](img/lin-markers.png)
-| Polygonial elements | `ply, ground`<br>`link, link2` | `0.5` | `beg, mid, end`<br> `#index` <br> normalized numerical parameter |`-1,0,1` | ![polygonial markers](img/poly-markers.png)
+| Polygonial elements | `ply, ground`<br>`link, link2` | `0.5` | `beg, end, mid, all`<br> `#index` <br> normalized numerical parameter |`-1,0,1` | ![polygonial markers](img/poly-markers.png)
+| Spline element | `spline` | `beg` | `beg, end, mid, all`<br> `#index` |`-1,0,1` | ![spline markers](img/spline-markers.png)
 
 # API Reference
 See the [API Reference](api/readme.md) for details.
@@ -199,6 +201,13 @@ In HTML use ...
 
 
 #Change Log
+
+## 0.4.5 - 2016-08-01
+### Modified
+
+* Use of `mark` and `label` element requires `cartesian` flag set from now on.
+* `use` command execution simplified.
+* styling bug with `g2.prototype.use` removed. 
 
 ## 0.4.4 - 2016-06-21
 ### Added

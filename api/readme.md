@@ -1,6 +1,6 @@
 <a name="g2"></a>
 ## g2 : <code>object</code>
-Mechanical extensions.
+Mechanical extensions.(Requires cartesian coordinates)
 
 **Kind**: global namespace  
 
@@ -49,7 +49,7 @@ g2().lin(10,10,100,10).mark("tick",[0,0.5,1],1)    .arc(100,100,50,3.14).mark("
 ```
 <a name="g2+label"></a>
 ### g2.label(str, [loc], off) ⇒ <code>object</code>
-Add label to certain elements. See element for support and meaning of arguments.
+Add label to certain elements. See element for support and meaning of arguments.*Please note:* any use of the `label` element requires previous setting of the `cartesian` flag, as ithighly depends on definition of a right handed coordinate system (which is implemented exclusively here).
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  

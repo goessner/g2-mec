@@ -8,9 +8,21 @@
 
 /**
  * Mechanical extensions.
+ * (Requires cartesian coordinates)
  * @namespace
  */
 var g2 = g2 || { prototype:{} };  // for jsdoc only ...
+
+/**
+ * Add skip tag to previous command as a filter for findCmdIdx.
+ * See 'mark' and 'label' commands for usage.
+ * @private
+ */
+g2.prototype.skip = function skip(tag) {
+   if (this.cmds.length)
+      this.cmds[this.cmds.length-1].skip = tag;
+   return this;
+}
 
 /**
  * Draw markers on line element.
@@ -32,19 +44,19 @@ var g2 = g2 || { prototype:{} };  // for jsdoc only ...
  * 
  */
 g2.prototype.mark = function mark(mrk,loc,dir) {
-   var idx = this.findCmdIdx(function(cmd) { return "len" in cmd && "p" in cmd; });
-   if (mrk && idx !== false) {
-      var cmd = this.cmds[idx], p={}, w,
-          q = cmd.loc ? cmd.loc([].concat(loc)) : [].concat(loc); // convert and append number or string or array to array.
-      for (var i=0; i < q.length && !p.done; i++) {
-         p = cmd.p(q[i]);
-         w = dir < 0 ? Math.atan2(-p.dy,-p.dx) // -Math.PI 
+   var idx = this.findCmdIdx(function(cmd) { return "len" in cmd.c.prototype && "p" in cmd.c.prototype; });
+       obj = idx >= 0 ? this.cmds[idx].c.create(this.cmds[idx].a) : null;
+   if (mrk && obj !== null) {
+      var p={}, w, q = obj.locs ? obj.locs([].concat(loc)) : [].concat(loc); // convert and append number or string or array to array.
+      for (var i=0; i < q.length; i++) {
+         p = obj.p(q[i]);
+         w = dir < 0 ? Math.atan2(-p.dy,-p.dx) 
            : dir > 0 ? Math.atan2( p.dy, p.dx) 
            : 0;
-//         console.log("lw="+(cmd.style && cmd.style.lw || 1))
-         this.use(mrk,{x:p.x,y:p.y,w:w,scl:(cmd.style && cmd.style.lw || "@lwOwner"),
-                       ls:(cmd.style && cmd.style.ls || "@ls"),
-                       fs:"@ls"});
+         this.use(mrk,{x:p.x,y:p.y,w:w,scl:(obj.style && obj.style.lw || "@lwOwner"),
+                       ls:(obj.style && obj.style.ls || "@ls"),
+                       fs:"@ls"})
+             .skip("label");
       }
    }
    return this;
@@ -53,6 +65,9 @@ g2.prototype.mark = function mark(mrk,loc,dir) {
 /**
  * Add label to certain elements. 
  * See element for support and meaning of arguments.
+ * *Please note:* any use of the `label` element requires previous setting of the `cartesian` flag, as it
+ * highly depends on definition of a right handed coordinate system (which is implemented 
+ * exclusively here).  
  * @method
  * @returns {object} g2
  * @param {string} str Label text
@@ -63,23 +78,22 @@ g2.prototype.mark = function mark(mrk,loc,dir) {
  * @param {float} off  Offset distance [optional].
  */
 g2.prototype.label = function label(str,loc,off) {
-   var idx = this.findCmdIdx(function(cmd) { return "p" in cmd; });
-   if (idx !== false) {
-      loc = loc === "mid" ? 0.5 : loc;
-      var cmd = this.cmds[idx],
-          p = cmd.p(cmd.loc ? cmd.loc(loc) : loc),
+   var idx = this.findCmdIdx(function(cmd) { return cmd.skip !== "label" && "p" in cmd.c.prototype; }),
+       obj;
+   obj = idx !== false ? this.cmds[idx].c.create(this.cmds[idx].a) : null;
+   if (obj) {
+      var p = obj.p(obj.loc ? obj.loc(loc) : loc),
           offset = (off+0 === off) ? (off || 1) // isnumeric ...
                  : (loc === "c") ? 0
-                 : (off === "left" ? -1 : 1)*this.state.get("labelOffset"),   // left of is negative ... ?
-          xoff = p.dy*offset, yoff = -p.dx*offset;
+                 : (off === "left" ? 1 : -1)*this.state.get("labelOffset"),  // 'left of' is positive (cartesian)...!
+          xoff = -p.dy*offset, yoff = p.dx*offset;
       p.x += xoff;
       p.y += yoff;
-      if (str[0] === "@" && (s=cmd[str.substr(1)]))  // expect 's' as string convertable to a number ...
-         str = "" + Number(s).toFixed(Math.max(g2.State.labelSignificantDigits-Math.log10(s),0))  // use at least 3 significant digits after decimal point.
+      if (str[0] === "@" && (s=obj[str.substr(1)]))   // expect 's' as string convertable to a number ...
+         str = "" + (Number.isInteger(+s) ? +s : Number(s).toFixed(Math.max(g2.State.labelSignificantDigits-Math.log10(s),0)))  // use at least 3 significant digits after decimal point.
                   + (str.substr(1) === "angle" ? "°" : "");
-      return this.txt(str,p.x,p.y,0,{thal: (xoff > 0 ? "left"   : xoff < 0  ? "right"  : "center"), 
-                                     tval: this.state.cartesian ? (yoff > 0 ? "bottom" : yoff < 0 ? "top" : "middle")
-                                                                : (yoff < 0 ? "bottom" : yoff > 0 ? "top" : "middle")});
+      return this.txt(str,p.x,p.y,0,{thal: xoff > 0 ? "left"   : xoff < 0 ? "right"  : "center", 
+                                     tval: yoff > 0 ? "bottom" : yoff < 0 ? "top"    : "middle"});
    }
    return this;
 };
@@ -504,7 +518,7 @@ g2.prototype.load = function load(pts,spacing,style) {
           lam = [], dlam, lambda = -dlambda;
 
       for (var i = 0; i < n; i++)  // build array of projection parameters of polypoints onto base line.
-         lam[i] = ((pitr(p,i).x - p0.x)*ux + (pitr(p,i).y - p0.y)*uy)/uu;
+         lam[i] = ((pitr(i).x - p0.x)*ux + (pitr(i).y - p0.y)*uy)/uu;
 
       return {
          next: function() {
@@ -515,8 +529,8 @@ g2.prototype.load = function load(pts,spacing,style) {
                   var mu = (lambda - lam[i])/dlam;
                   return {
                      value: {
-                        p1: {x:p0.x + lambda*ux,y:p0.y + lambda*uy},
-                        p2: {x:pitr(p,i).x + mu*(pitr(p,i+1).x-pitr(p,i).x),y:pitr(p,i).y + mu*(pitr(p,i+1).y-pitr(p,i).y)}
+                        p1: {x:p0.x + lambda*ux, y:p0.y + lambda*uy},
+                        p2: {x:pitr(i).x + mu*(pitr(i+1).x-pitr(i).x), y:pitr(i).y + mu*(pitr(i+1).y-pitr(i).y)}
                      }
                   }
                }
@@ -526,7 +540,7 @@ g2.prototype.load = function load(pts,spacing,style) {
       };
    }
 
-   var pitr = g2.prototype.ply.itrOf(pts), n = pitr(pts).count, p0 = pitr(pts,0), pn = pitr(pts,n-1),
+   var pitr = g2.prototype.ply.itrOf(pts), n = pitr.len, p0 = pitr(0), pn = pitr(n-1),
        dlambda = spacing < 1 ? spacing : spacing/Math.hypot(pn.x-p0.x,pn.y-p0.y),
        itr = iterator(pts,dlambda), val;
    this.ply(pts,false,Object.assign({fs:"@linkfill"},style,{ls:"transparent"}));
@@ -645,11 +659,11 @@ g2.symbol.gnd =    g2().cir(0,0,6,{ls:"@nodcolor",fs:"@nodfill",lwnosc:true})
 g2.symbol.pol =    g2().cir(0,0,6,{ls:"@nodcolor",fs:"@nodfill",lwnosc:true})
                        .cir(0,0,2.5,{ls:"@nodcolor",fs:"@nodcolor"});
                        
-g2.symbol.dot = g2().cir(0,0,1.5,{fs:"@ls",lwnosc:true});
-g2.symbol.sqr = g2().rec(-1.5,-1.5,3,3,{fs:"@ls",lwnosc:true});
-g2.symbol.tilde = g2().p().m(0,2).a(Math.PI/2,0,0).a(-Math.PI/2,0,-2).stroke({lc:"round"});
+g2.symbol.dot = g2().cir(0,0,1.5,{fs:"@ls",ls:"transparent"});
+g2.symbol.sqr = g2().rec(-1.5,-1.5,3,3,{fs:"@ls",ls:"transparent"});
+g2.symbol.tilde = g2().p().m(0,2).a(Math.PI/2,0,0).a(-Math.PI/2,0,-2).stroke({lc:"round",lwnosc:true});
 g2.symbol.arrow = g2().p().m(0,0).l(-7,-2).a(Math.PI/3,-7,2).z().drw({fs:"@ls",lj:"round",lwnosc:true});
-g2.symbol.tick = g2().p().m(0,-2).l(0,2).stroke({lc:"round"});
+g2.symbol.tick = g2().p().m(0,-2).l(0,2).stroke({lc:"round",lwnosc:true});
 g2.symbol.arrowtick = g2().p().m(0,-2).l(0,2).m(0,0).l(-7,-2).a(Math.PI/3,-7,2).z().drw({lj:"round",lc:"round"});
 g2.symbol.ifo2pos = g2().style({ls:"@nodcolor",lc:"round",fs:"@ls",lw:1,lwnosc:true})
                         .p().m(0,2).a(-Math.PI/2,0,0).a(Math.PI/2,0,-2)
@@ -680,19 +694,24 @@ g2.symbol.ifo3neg = g2().style({ls:"@nodcolor",lc:"round",fs:"@ls",lw:1,lwnosc:t
 
 // ======================
 
-g2.prototype.lin.proto = {
-   get x1() { return this.a[0]; },
-   get y1() { return this.a[1]; },
-   get dx() { return this.a[2] - this.a[0]; },
-   get dy() { return this.a[3] - this.a[1]; },
+g2.prototype.lin.create = function() { var o = Object.create(g2.prototype.lin.prototype); o.constructor.apply(o,arguments[0]); return o; };
+g2.prototype.lin.prototype = {
+   constructor: function(x1,y1,x2,y2,style) {
+      this.x1 = x1;
+      this.y1 = y1;
+      this.x2 = x2;
+      this.y2 = y2;
+      this.style = style;
+   },
+   get dx() { return this.x2 - this.x1; },
+   get dy() { return this.y2 - this.y1; },
    get len() { return Math.hypot(this.dx,this.dy); },
-   get style() { return this.a[4]; },
    p: function(loc) {
       var t = loc==="beg" ? 0 
             : loc==="end" ? 1 
             : (loc+0 === loc) ? loc
-            : 0.5,
-          len = this.g2.state.cartesian ? this.len : -this.len; // correct left/right side ...
+            : 0.5,   // 'mid' ..
+          len = this.len;
       return { x: this.x1 + this.dx*t,
                y: this.y1 + this.dy*t,
                dx: this.dx/len,
@@ -701,17 +720,19 @@ g2.prototype.lin.proto = {
    },
 };
 
-g2.prototype.rec.proto = {
-   dir: { c:[0,0,1],e:[1,0,1],ne:[1,-1,Math.SQRT2],n:[0,-1,1],nw:[-1,-1,Math.SQRT2],w:[-1,0,1],sw:[-1,1,Math.SQRT2],s:[0,1,1],se:[1,1,Math.SQRT2] },
-   get x() { return this.a[0]; },
-   get y() { return this.a[1]; },
-   get b() { return this.a[2]; },
-   get h() { return this.a[3]; },
+g2.prototype.rec.create = function() { var o = Object.create(g2.prototype.rec.prototype); o.constructor.apply(o,arguments[0]); return o; };
+g2.prototype.rec.prototype = {
+   dir: { c:[0,0,1],e:[1,0,1],ne:[1,1,Math.SQRT2],n:[0,1,1],nw:[-1,1,Math.SQRT2],w:[-1,0,1],sw:[-1,-1,Math.SQRT2],s:[0,-1,1],se:[1,-1,Math.SQRT2] },
+   constructor: function(x,y,b,h,style) {
+      this.x = x;
+      this.y = y;
+      this.b = b;
+      this.h = h;
+      this.style = style;
+   },
    get len() { return 2*(this.b+this.h); },
-   get style() { return this.a[4]; },
    p: function(loc) {
-      var q = this.dir[loc || "c"] || this.dir['c'],
-          nx = q[0], ny = this.g2.state.cartesian ? -q[1] : q[1];
+      var q = this.dir[loc || "c"] || this.dir['c'], nx = q[0], ny = q[1];
       return { x: this.x + (1 + nx)*this.b/2,
                y: this.y + (1 + ny)*this.h/2,
                dx: -ny/q[2],
@@ -720,17 +741,20 @@ g2.prototype.rec.proto = {
    }
 };
 
-g2.prototype.cir.proto = {
+g2.prototype.cir.create = function() { var o = Object.create(g2.prototype.cir.prototype); o.constructor.apply(o,arguments[0]); return o; };
+g2.prototype.cir.prototype = {
    dir: { c:[0,0],e:[1,0],ne:[Math.SQRT2/2,Math.SQRT2/2],n:[0,1],nw:[-Math.SQRT2/2,Math.SQRT2/2],w:[-1,0],sw:[-Math.SQRT2/2,-Math.SQRT2/2],s:[0,-1],se:[Math.SQRT2/2,-Math.SQRT2/2] },
-   get x() { return this.a[0]; },
-   get y() { return this.a[1]; },
-   get r() { return this.a[2]; },
+   constructor: function(x,y,r,style) {
+      this.x = x;
+      this.y = y;
+      this.r = r;
+      this.style = style;
+   },
    get len() { return 2*Math.PI*this.r; },
-   get style() { return this.a[3]; },
    p: function(loc) {
       var q = (loc+0 === loc) ? [Math.cos(loc*2*Math.PI),Math.sin(loc*2*Math.PI)] 
                               : this.dir[loc || "c"],
-          nx = q[0], ny = this.g2.state.cartesian ? q[1] : -q[1];
+          nx = q[0], ny = q[1];
       return { x: this.x + nx*this.r,
                y: this.y + ny*this.r,
                dx: -ny, 
@@ -739,15 +763,18 @@ g2.prototype.cir.proto = {
    }
 };
 
-g2.prototype.arc.proto = {
-   get x() { return this.a[0]; },
-   get y() { return this.a[1]; },
-   get r() { return this.a[2]; },
-   get w() { return this.a[3]; },
-   get dw() { return this.a[4]; },
+g2.prototype.arc.create = function() { var o = Object.create(g2.prototype.arc.prototype); o.constructor.apply(o,arguments[0]); return o; };
+g2.prototype.arc.prototype = {
+   constructor: function(x,y,r,w,dw,style) {
+      this.x = x;
+      this.y = y;
+      this.r = r;
+      this.w = w;
+      this.dw = dw;
+      this.style = style;
+   },
    get len() { return Math.abs(this.r*this.dw); },
    get angle() { return this.dw/Math.PI*180; },
-   get style() { return this.a[5]; },
    p: function(loc) {
       var t = loc==="beg" ? 0 
             : loc==="end" ? 1 
@@ -763,13 +790,16 @@ g2.prototype.arc.proto = {
    }
 };
 
-// a:[pts,mode,itr,style]
-g2.prototype.ply.proto = {
-   get pts() { return this.a[0]; },
-   get itr() { return this.a[2] || g2.prototype.ply.itrOf(this.a[0],this.a[3]); },
+g2.prototype.ply.create = function() { var o = Object.create(g2.prototype.ply.prototype); o.constructor.apply(o,arguments[0]); return o; };
+g2.prototype.ply.prototype = {
+   constructor: function(pts,mode,itr,style) {
+      this.pts = pts;
+      this.mode = mode;
+      this.itr = itr || g2.prototype.ply.itrOf(pts,style);
+      this.style = style;
+   },
    get n() { return this.itr.len; },
-   get closed() { return this.a[1] === true; },
-   get style() { return this.a[3]; },
+   get closed() { return this.mode === true; },
    get len() {  // cannot cache polygon length, as points might be dynamically modified ...
       var i, j, itr = this.itr, pi = itr(0), pj, n = this.n, closed = this.closed, len = 0;
       for (i=0, j=1; i < (closed ? n : n-1); i++, j=(i+1)%n) {
@@ -780,7 +810,13 @@ g2.prototype.ply.proto = {
       return len;
    },
    // substitute locations in array 'q'.
-   loc: function(q) {
+   loc: function(loc) {
+      if      (loc === "beg") loc = "#0";
+      else if (loc === "end") loc = "#"+Math.max(this.n-1,0);
+      else if (loc === undefined) loc = 0.5;  // "mid"
+      return loc;
+   },
+   locs: function(q) {
       function idxarr(m,n) { var a=[]; for(var i=m;i < n;i++) a.push("#"+i); return a; }
       for (var i=0; i<q.length; i++) {
          if      (q[i] === "beg") q[i] = "#0";
@@ -798,20 +834,26 @@ g2.prototype.ply.proto = {
           return this.pPar(loc);
    },
    pIdx: function(j) {
-      var i = Math.max(j-1,0), k = Math.min(j+1,this.n-1), itr = this.itr,
+      var closed = this.closed, n = this.n, itr = this.itr,
+          i = closed ? (j-1+n)%n : Math.max(j-1,0), 
+          k = closed ? (j+1)%n : Math.min(j+1,n-1), 
           pi = itr(i), pj = itr(j), pk = itr(k),
-          dx = pk.x - pi.x, dy = pk.y - pi.y, 
-          dd = this.g2.state.cartesian ? Math.hypot(dx,dy) : -Math.hypot(dx,dy);
+          dij = Math.hypot(pj.x - pi.x, pj.y - pi.y),
+          djk = Math.hypot(pk.x - pj.x, pk.y - pj.y),
+          dx = (dij > Number.EPSILON ? (pj.x - pi.x)/dij : 0) + 
+               (djk > Number.EPSILON ? (pk.x - pj.x)/djk : 0), 
+          dy = (dij > Number.EPSILON ? (pj.y - pi.y)/dij : 0) + 
+               (djk > Number.EPSILON ? (pk.y - pj.y)/djk : 0), 
+          dd = Math.hypot(dx,dy);
       return { x: pj.x,
                y: pj.y,
-               dx: dx/dd, 
-               dy: dy/dd
+               dx: dd > Number.EPSILON ? dx/dd : 0, 
+               dy: dd > Number.EPSILON ? dy/dd : 0
       };
    },
    pPar: function(u) {
       var i, j, itr = this.itr, pi = itr(0), pj, n = this.n, len = this.len, 
-          closed = this.closed, s = 0, dx, dy, ds, su, ui, 
-          sgn = this.g2.state.cartesian ? 1 : -1;
+          closed = this.closed, s = 0, dx, dy, ds, su, ui;
       if (len > 0) {
          u = Math.max(0,Math.min(1,u));  // 0 <= u <= 1
          su = u*len;
@@ -824,8 +866,8 @@ g2.prototype.ply.proto = {
                ui = (u - s/len)*len/ds;
                return { x: pi.x + ui*dx,
                         y: pi.y + ui*dy,
-                        dx: sgn*dx/ds, 
-                        dy: sgn*dy/ds
+                        dx: dx/ds, 
+                        dy: dy/ds
                };
             }
             s += ds;
@@ -833,15 +875,72 @@ g2.prototype.ply.proto = {
         }
       }
       return itr(0);
-   },
+   }
 };
 
-g2.prototype.use.proto = {
-   dir: g2.prototype.cir.proto.dir,
-   get x() { return this.a[1].x; },
-   get y() { return this.a[1].y; },
+g2.prototype.spline.create = function() { var o = Object.create(g2.prototype.spline.prototype); o.constructor.apply(o,arguments[0]); return o; };
+g2.prototype.spline.prototype = {
+   constructor: function(pts,closed,style) {
+      this.pts = pts;
+      this.closed = closed;
+      this.itr = g2.prototype.ply.itrOf(pts,style)
+      this.style = style;
+   },
+   get n() { return this.itr.len; },
+   get len() { return 1; }, // fake .. not implemented .. !
+   // substitute locations in array 'q'.
+   loc: function(loc) {
+      if      (loc === "beg") loc = "#0";
+      else if (loc === "end") loc = "#"+Math.max(this.n-1,0);
+      return loc;
+   },
+   locs: function(q) {
+      function idxarr(m,n) { var a=[]; for(var i=m;i < n;i++) a.push("#"+i); return a; }
+      for (var i=0; i<q.length; i++) {
+         if      (q[i] === "beg") q[i] = "#0";
+         else if (q[i] === "end") q[i] = "#"+Math.max(this.n-1,0);
+         else if (q[i] === "mid") q = q.splice(i,1) && q.concat(idxarr(1,Math.max(1,this.n-1)));
+         else if (q[i] === "all") q = q.splice(i,1) && q.concat(idxarr(0,Math.max(1, this.closed ? this.n-1 : this.n)));
+      }
+      return q;
+   },
+   p: function(loc) {
+      if (typeof loc === "string" && loc[0] === "#")
+          return this.pIdx(+loc.substr(1));
+      else
+          return this.pIdx(0);
+   },
+   pIdx: function(j) {
+       var pj = this.itr(j), dx, dy, dd, res;
+       if (this.closed || j !== this.n-1) {
+           dx = pj.x1-pj.x;
+           dy = pj.y1-pj.y;
+       }
+       else {
+           var pi = this.itr(j-1);
+           dx = pj.x - pi.x2;
+           dy = pj.y - pi.y2;
+       }
+       dd = Math.hypot(dx,dy);
+       return { x: pj.x,
+                y: pj.y,
+                dx: dd > Number.EPSILON ? dx/dd : 0, 
+                dy: dd > Number.EPSILON ? dy/dd : 0
+       };
+   }
+};
+
+g2.prototype.use.create = function() { var o = Object.create(g2.prototype.use.prototype); o.constructor.apply(o,arguments[0]); return o; };
+g2.prototype.use.prototype = {
+   dir: g2.prototype.cir.prototype.dir,
+   constructor: function(g,args) {
+      this.g = g;
+      this.args = args;
+   },
+   get x() { return this.args && this.args.x || 0; },
+   get y() { return this.args && this.args.y || 0; },
    get r() { return 5; },
-   p: g2.prototype.cir.proto.p
+   p: g2.prototype.cir.prototype.p
 };
 
 /*
