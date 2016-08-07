@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>fs bug</title>   
+</head>
+
+<body>
+    <div id="svg" data-width="401", data-height="401"></div><br>
+    <canvas id="c" width="401" height="401"></canvas>
+
+    <script src="../../g2/g2.js"></script>
+    <script src='../../g2-svg/g2.svg.js'></script>
+    <script>
+
+   var ctx = document.getElementById("c").getContext("2d"), g, world;
+
+   g = g2().cir(200,200,40,{fs:"@ls"});
+   world = g2().cartesian()
+               .style({lw:3,ls:"gray",fs:"orange"})
+               .rec(100,100,200,200)
+               .use(g)
+               .exe(ctx)
+               .exe(document.getElementById("svg"));
+//       .exe(svg)
+       console.log(document.getElementById("svg").innerHTML)
+    </script>
+</body>
+</html>

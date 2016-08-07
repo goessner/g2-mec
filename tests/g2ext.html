@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>extend</title>   
+</head>
+
+<body>
+    <canvas id="c" width="201" height="101"></canvas>
+    <script>
+function g2() {
+   if (this instanceof g2) {
+      this.cmds = [];
+      return this;
+   }
+   else
+      return g2.apply(Object.create(g2.prototype),arguments);
+}
+
+g2.prototype.lin = function lin(x1,y1,x2,y2) {
+   console.log("lin called")
+   this.cmds.push({c:lin,a:[x1,y1,x2,y2]});
+   return this;
+}
+
+g2.prototype.lin.create = function() { 
+   var o = Object.create(g2.prototype.lin.prototype); 
+   o.constructor.apply(o,arguments[0]); 
+   return o; 
+},
+
+g2.prototype.lin.prototype = {
+   constructor: function(x1,y1,x2,y2) {
+      this.x1 = x1;
+      this.y1 = y1;
+      this.x2 = x2;
+      this.y2 = y2;
+   },
+   get len() { return Math.hypot(this.x2-this.x1,this.y2-this.y1); }
+}
+
+g2.prototype.proxy = function proxy(idx) {
+   var cmd = this.cmds[idx],
+       obj = cmd.c && cmd.c.create ? cmd.c.create(cmd.a) : null;
+
+   if (obj)
+      console.log(obj.len);
+   else
+      console.log("no obj");
+}
+
+var g = g2();
+
+g.lin(1,2,3,4).proxy(0);
+
+    </script>
+</body>
+</html>

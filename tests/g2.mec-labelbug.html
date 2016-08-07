@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>label/mark bug</title>   
+</head>
+
+<body>
+    <canvas id="c" width="401" height="401"></canvas>
+
+    <script src="../../g2/g2.js"></script>
+    <script src="../g2.mec.js"></script>     
+
+    <script>
+
+   var cnv = document.getElementById("c")
+       ctx = cnv.getContext("2d"), 
+
+       A = {x:180, y:80}, B = {x:180, y:200}, C = {x:80, y:300},
+       
+       // linke Canvasseite
+       g = g2()
+	           //.cartesian()  // muss hier nochmal geflagged werden für korrektes Verhalten
+			   
+               .vec({x:A.x, y:A.y}, {x:B.x, y:B.y}, {lw:3})  // BUG  // interner g2.mec code für die Spitze (Zeile 105): this.mark("arrow","end",1)
+			      .label("(use, beg, left)","beg","left")    // BUG
+			   
+			   .lin(A.x-130,A.y,B.x-130,B.y,{lw:3}) // äquivalent zum Vektor
+			      .mark("arrow",1,1)  // BUG
+				  
+			   .ply([50,250, 150,250],false, {lw:3})    
+			      .label("(use, #1, left)","#1","left")  // BUG
+			   
+			   .avec({x:C.x, y:C.y}, 50, 0, Math.PI, {lw:3})  // Pfeilspitze OK
+			      .label("use,mid,right","mid","right")       // BUG
+			   
+		/*	   .cir(C.x,C.y,5)
+			      .label("use, west","w")  // OK
+				  
+			   .rec(80,330,50,50)
+			      .label("use, west","w")  // OK
+		*/		  				  
+			   
+	   ,
+      
+
+       // rechte Canvasseite
+       world = g2().cartesian()
+	   
+                   .avec({x:C.x+220, y:C.y}, 50, 0, Math.PI, {lw:3})
+				      .label("world, mid, right","mid","right")
+					  
+                   .vec({x:A.x+170, y:A.y}, {x:B.x+170, y:B.y}, {lw:3})
+				      .label("(world, beg, left)","beg","left")
+					  
+                   .use(g)        
+       ;
+        
+   world.exe(ctx);
+
+
+    </script>
+</body>
+</html>

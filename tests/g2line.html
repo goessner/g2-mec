@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>line bug</title>   
+</head>
+
+<body>
+    <canvas id="c" width="201" height="101"></canvas>
+
+    <script src="../../g2/g2.js"></script>
+    <script src="../g2.mec.js"></script>
+
+    <script>
+
+   var g = g2();
+
+       g
+//        .style({ls:"red"})
+        .lin(50,25,150,25,{ls:"red"})
+        .mark("tick",["beg","end"])
+        .exe(document.getElementById("c").getContext("2d"));
+
+function f() {}
+
+
+    </script>
+</body>
+</html>

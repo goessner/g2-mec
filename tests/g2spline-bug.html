@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>spline mark bug</title>   
+</head>
+
+<body>
+    <canvas id="c" width="201" height="101"></canvas>
+
+    <script src="../../g2/g2.js"></script>
+    <script src="../g2.mec.js"></script>     
+
+    <script>
+   var ctx = document.getElementById("c").getContext("2d"),
+       g = g2();
+
+       g.cartesian()
+           .ply([50,25,100,25,100,75,150,75,150,35],false,{lw:2})
+           .mark("tick",["all"], 1)
+           .label("left","end","left")
+           .exe(ctx);
+
+    </script>
+</body>
+</html>

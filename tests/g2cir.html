@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>circle label</title>   
+</head>
+
+<body>
+    <canvas id="c" width="201" height="101"></canvas>
+
+    <script src="../../g2/g2.js"></script>
+    <script src="../g2.mec.js"></script>
+
+    <script>
+
+   var g = g2();
+
+       g.cartesian()
+        .cir(100,50,30)
+        .label("hi", "e")
+        .exe(document.getElementById("c").getContext("2d"));
+
+function f() {}
+
+
+    </script>
+</body>
+</html>

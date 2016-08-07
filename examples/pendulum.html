@@ -8,8 +8,9 @@
 <body>
     <h1>Pendulum</h1>
     <canvas id="c" width="400" height="400"></canvas>
-    <script src='../../g2/dist/g2.js'></script>
-    <script src='../src/g2.mec.js'></script>
+    <script src="https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js"></script>
+    <script src="https://gitcdn.xyz/repo/goessner/g2-mec/master/g2.mec.min.js"></script>
+    <script src="https://gitcdn.xyz/repo/goessner/g2-chart/master/g2.chart.min.js"></script>
     <script>
        var ctx = document.getElementById("c").getContext("2d"),
            x0 = 200, y0 = 380, r = 140, m = 5, g = 9.81, omega0 = Math.sqrt(9.81/1.4),
@@ -32,8 +33,8 @@
           pendulum.del()
                   .lin(x0,y0,x,y,{ls:"#444"})
                   .cir(x,y,8)
-                  .vec(x,y,x,y-m*g,{lw:2,ls:"maroon"}).label("mg","end")
-                  .vec(x,y,x+m*r*0.01*dphi*dphi*sp,y+m*r*0.01*dphi*dphi*cp,{lw:2,ls:"maroon"}).label("mrω^2","end","left");
+                  .vec({x:x,y:y},{dx:0,dy:-m*g},{lw:2,ls:"maroon"}).label("mg","end")
+                  .vec({x:x,y:y},{dx:m*r*0.01*dphi*dphi*sp,dy:m*r*0.01*dphi*dphi*cp},{lw:2,ls:"maroon"}).label("mrω^2","end","left");
           world.exe(ctx);
           requestAnimationFrame(render);
        };

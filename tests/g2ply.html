@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>ply label</title>   
+</head>
+
+<body>
+    <canvas id="c" width="201" height="101"></canvas>
+    <script src="../../g2/g2.js"></script>
+    <script src="../g2.mec.js"></script>
+    <script>
+   var g = g2();
+
+       g.cartesian()
+        .spline([50,25,100,50,100,75,150,75,150,35],true,{lw:2,lwnosc:true})
+        .mark("tick", "all", 1)
+//        .mark("arrow", "end", 1)
+//        .mark("dot", [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0], 1)
+        .label("mid","#1","right")
+        .exe(document.getElementById("c").getContext("2d"));
+
+    </script>
+</body>
+</html>

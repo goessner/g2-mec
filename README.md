@@ -7,7 +7,7 @@
 
 ### Mechanical Symbols ###
 
-`g2.mec.js` provides some useful mechanical symbols.
+`g2.mec.js` provides some useful mechanical symbols for the [`g2.js`](https://github.com/goessner/g2) graphics library.
 
 ![img.symbols.mec](img/symbols.mec.png)
 
@@ -73,7 +73,7 @@ You can overwrite them, if you are not comfortable with it.
 | State.labelSignificantDigits | <code>number</code> | <code>3</code> | default label's significant digits after floating point. |
 
 
-### Truss Example ###
+### Truss Example
 
 You can see a simple truss below, composed from mechanical symbols and elements.
 
@@ -122,7 +122,7 @@ If there is no offset distance specified, the global `g2.State.labelOffset`'s va
 that cardinal locations are not sensitive to transformations.
 
 
-### Truss Example with Labels###
+### Truss Example with Labels
 
 The truss example above can now be improved by adding labels.
 
