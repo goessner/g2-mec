@@ -205,7 +205,7 @@ In HTML use ...
 
 #Change Log
 
-## 0.4.6 - 2016-09-09
+## 0.4.7 - 2016-09-09
 ### Modified
 
 * `label` offset bug removed.
