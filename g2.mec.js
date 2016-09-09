@@ -83,10 +83,13 @@ g2.prototype.label = function label(str,loc,off) {
    obj = idx !== false ? this.cmds[idx].c.create(this.cmds[idx].a) : null;
    if (obj) {
       var p = obj.p(obj.loc ? obj.loc(loc) : loc),
-          offset = (off+0 === off) ? (off || 1) // isnumeric ...
+          offset = (off+0 === off) ? (off || 1) // amount of offset ...
                  : (loc === "c") ? 0
-                 : (off === "left" ? 1 : -1)*this.state.get("labelOffset"),  // 'left of' is positive (cartesian)...!
-          xoff = -p.dy*offset, yoff = p.dx*offset;
+                 : this.state.get("labelOffset"),
+          xoff, yoff;
+
+      if (off !== "left") offset = -offset;  // 'right of' dir ... turn dir vector negative ... default
+      xoff = -p.dy*offset; yoff = p.dx*offset;
       p.x += xoff;
       p.y += yoff;
       if (str[0] === "@" && (s=obj[str.substr(1)]))   // expect 's' as string convertable to a number ...
@@ -709,7 +712,7 @@ g2.prototype.lin.prototype = {
    p: function(loc) {
       var t = loc==="beg" ? 0 
             : loc==="end" ? 1 
-            : (loc+0 === loc) ? loc
+            : (loc+0 === loc) ? loc 
             : 0.5,   // 'mid' ..
           len = this.len;
       return { x: this.x1 + this.dx*t,

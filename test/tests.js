@@ -108,6 +108,19 @@ var tests = [
                 .label("w","w")
                 .label("sw","sw")`
 },
+{ title: "circular\nlabels\nwith\noffset",
+  src: `g2()
+ .cartesian()
+ .cir(100,50,20).label("c")
+                .label("s","s",10)
+                .label("se","se",10)
+                .label("e","e",10)
+                .label("ne","ne",10)
+                .label("n","n",10)
+                .label("nw","nw",10)
+                .label("w","w",10)
+                .label("sw","sw",10)`
+},
 { title: "use\nlabels",
   src: `g2()
  .cartesian()
@@ -201,7 +214,7 @@ var tests = [
  .cartesian()
  .spline([50,25,100,25,100,75,150,75,150,25])
     .mark("dot","#2")
-    .label("#2","#2","right")
+    .label("#2","#2",10)
  `
 },
 { title: "labels\nspline",
@@ -209,7 +222,7 @@ var tests = [
  .cartesian()
  .spline([50,25,100,25,100,75,150,75,150,25])
     .mark("dot","#3")
-    .label("#3","#3","left")
+    .label("#3","#3",-10)
  `
 },
 { title: "load",

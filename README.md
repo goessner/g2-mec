@@ -1,5 +1,6 @@
 [![License](http://img.shields.io/:license-mit-blue.svg)](https://github.com/goessner/g2/license.txt)
 [![npm](https://img.shields.io/npm/v/g2d-mec.svg)](https://www.npmjs.com/package/g2d-mec)
+[![npm](https://img.shields.io/npm/dt/g2d-mec.svg)](https://www.npmjs.com/package/g2d-mec)
 
 # g2.mec.js #
 
@@ -118,7 +119,9 @@ or named locations.
 | Polygonial elements | `ply, ground`<br>`link, link2` | `0.5` | `beg, end`<br> `#index` <br> normalized numerical parameter | `left, right`<br>number | ![polygon with labels](img/poly-label.mec.png)
 | Spline element | `spline` | `beg` | `beg, end`<br> `#index` | `left, right`<br>number | ![spline with labels](img/spline-label.mec.png)
 
-If there is no offset distance specified, the global `g2.State.labelOffset`'s value is taken. Please note,
+A numerical offset always means *outside* of closed shapes with regard to the specified point.
+With linear, polygonial and spline elements a positive value means *right of* and a negativ value means *left of*
+the line at the specified point. If there is no offset distance specified, the global `g2.State.labelOffset`'s value is taken. Please note,
 that cardinal locations are not sensitive to transformations.
 
 
@@ -201,6 +204,11 @@ In HTML use ...
 
 
 #Change Log
+
+## 0.4.6 - 2016-09-09
+### Modified
+
+* `label` offset bug removed.
 
 ## 0.4.5 - 2016-08-01
 ### Modified
